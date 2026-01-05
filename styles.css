@@ -36,6 +36,23 @@ h2 {
   color: #e6bfa0;
 }
 
+.project-title {
+  font-size: 1.35rem;
+  color: #f7c99a;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  border-bottom: 1px dashed #f59f5c;
+  padding-bottom: 6px;
+}
+
+.arc {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #ffd3a1;
+  border-left: 3px solid #f59f5c;
+  padding-left: 10px;
+}
+
 p {
   margin: 0 0 12px 0;
 }
