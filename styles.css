@@ -42,6 +42,7 @@ h2 {
   margin: 0 0 16px 0;
   font-weight: normal;
   color: #f0f0f0;
+  margin-left: 5px;
 }
 
 h1 {
@@ -99,6 +100,9 @@ p {
   color: #e6b35c;
   margin: 0 0 8px 0;
   padding-left: 2.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .timeline-item summary .summary-type {
@@ -121,9 +125,10 @@ p {
 }
 
 .timeline-item summary .summary-clip {
-  display: inline-block;
+  display: block;
   margin-left: 3px;
   overflow: hidden;
+  flex: 1;
 }
 
 .timeline-item summary::marker {
