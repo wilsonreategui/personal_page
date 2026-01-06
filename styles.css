@@ -113,6 +113,10 @@ p {
   display: inline;
 }
 
+.timeline-item summary .summary-clip {
+  display: inline;
+}
+
 .timeline-item summary::marker {
   color: #e6b35c;
 }
@@ -261,6 +265,13 @@ p {
     padding-right: 18px;
   }
 
+  .timeline-item summary .summary-clip {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 2px;
+    overflow: hidden;
+  }
+
   .timeline-item summary .summary-text {
     display: inline-block;
     padding-right: 24px;
@@ -275,6 +286,7 @@ p {
   0% {
     transform: translateX(0);
   }
+
   100% {
     transform: translateX(calc(-1 * var(--marquee-distance)));
   }

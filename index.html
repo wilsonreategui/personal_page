@@ -18,7 +18,8 @@
         <h2 class="project-title">Quorum</h2>
         <h2 class="arc">ARCO 1: Herencia</h2>
         <details class="timeline-item">
-            <summary><span class="summary-text">1.3 <span class="summary-type">Colección</span> Pecados del Padre</span></summary>
+            <summary><span class="summary-clip"><span class="summary-text">1.3 <span
+                            class="summary-type">Colección</span> Pecados del Padre</span></span></summary>
             <div class="content">
                 <p>
                     ▚▚▞▚▟▞▚▚▚▞▚▟
@@ -26,7 +27,8 @@
             </div>
         </details>
         <details class="timeline-item">
-            <summary><span class="summary-text">1.2 <span class="summary-type">Canción</span> R u with me? (La travesía)</span></summary>
+            <summary><span class="summary-clip"><span class="summary-text">1.2 <span class="summary-type">Canción</span>
+                        R u with me? (La travesía)</span></span></summary>
             <div class="content">
                 <p>
                     [⋔⧜⧉⥊]: Aquel ser viaja a través de sus recuerdos, buscando erradicar su existencia del pasado. Lo
@@ -41,7 +43,8 @@
             </div>
         </details>
         <details class="timeline-item">
-            <summary><span class="summary-text">1.1 <span class="summary-type">Ensayo</span> Disrupción por castigo</span></summary>
+            <summary><span class="summary-clip"><span class="summary-text">1.1 <span class="summary-type">Ensayo</span>
+                        Disrupción por castigo</span></span></summary>
             <div class="content">
                 <p>[No Identificado] - (▚▞▚▟)</p>
                 <p>
@@ -89,7 +92,8 @@
             </div>
         </details>
         <details class="timeline-item">
-            <summary><span class="summary-text">1.0 <span class="summary-type">Colección</span> [In⧉o t⧜e V⧠⟿⟲d]</span></summary>
+            <summary><span class="summary-clip"><span class="summary-text">1.0 <span
+                            class="summary-type">Colección</span> [In⧉o t⧜e V⧠⟿⟲d]</span></span></summary>
             <div class="content">
                 <p>
                     [D⧉t⧜s c⧠rru⟿pt⧜s]
@@ -98,7 +102,7 @@
         </details>
         <!-- <h2 class="arc">ARCO 2: ⧠⟡⥊⟿⧖⋇</h2>
         <details class="timeline-item">
-            <summary>2.1 <span class="summary-type">⥊⧙⟡⧠⋇</span> ⧖⟿⋇⟡</summary>
+            <summary><span class="summary-clip"><span class="summary-text">2.1 <span class="summary-type">⥊⧙⟡⧠⋇</span> ⧖⟿⋇⟡</span></span></summary>
             <div class="content">
                 <p>
                     ▚▚▞▚▟▞▚▚▚▞▚▟
@@ -108,7 +112,8 @@
         <p class="line section-line section-line--spaced"><span class="prompt">#</span><span
                 class="section-title">Anexos</span><span class="line-fill" aria-hidden="true"></span></p>
         <details class="timeline-item" open>
-            <summary><span class="summary-text">1.0 <span class="summary-type">Audio</span> Complex</span></summary>
+            <summary><span class="summary-clip"><span class="summary-text">1.0 <span class="summary-type">Audio</span>
+                        Complex</span></span></summary>
             <div class="content">
                 <audio controls preload="metadata">
                     <source src="audio/complex.wav" type="audio/wav">
@@ -120,12 +125,14 @@
         const updateMarquee = () => {
             document.querySelectorAll(".timeline-item summary").forEach((summary) => {
                 const text = summary.querySelector(".summary-text");
+                const clip = summary.querySelector(".summary-clip");
                 if (!text) {
                     return;
                 }
                 summary.classList.remove("is-overflow");
                 text.style.removeProperty("--marquee-distance");
-                const overflow = text.scrollWidth - summary.clientWidth;
+                const availableWidth = clip ? clip.clientWidth : summary.clientWidth;
+                const overflow = text.scrollWidth - availableWidth;
                 if (overflow > 0) {
                     summary.classList.add("is-overflow");
                     text.style.setProperty("--marquee-distance", `${overflow + 24}px`);
