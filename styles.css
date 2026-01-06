@@ -14,7 +14,9 @@ body {
 .terminal {
   max-width: 760px;
   margin: 0 auto;
-  background: #1a1a1a;
+  background:
+    /*#1a1a1a;*/
+    transparent;
   padding: 28px;
   border:
     /*1px solid #2b2b2b;*/
