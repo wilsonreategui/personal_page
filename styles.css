@@ -16,8 +16,12 @@ body {
   margin: 0 auto;
   background: #1a1a1a;
   padding: 28px;
-  border: 1px solid #2b2b2b;
-  box-shadow: 0 0 0 2px #0f0f0f, 0 0 24px rgba(0, 0, 0, 0.6);
+  border:
+    /*1px solid #2b2b2b;*/
+    none;
+  box-shadow:
+    /*0 0 0 2px #0f0f0f, 0 0 24px rgba(0, 0, 0, 0.6);*/
+    none;
 }
 
 h1,
@@ -62,11 +66,9 @@ h2 {
   content: "";
   flex: 1;
   height: 1px;
-  background: repeating-linear-gradient(
-    90deg,
-    #3a3a3a 0 8px,
-    transparent 8px 14px
-  );
+  background: repeating-linear-gradient(90deg,
+      #3a3a3a 0 8px,
+      transparent 8px 14px);
 }
 
 p {
@@ -151,15 +153,13 @@ p {
 
 @media (max-width: 640px) {
   body {
-    padding: 16px;
+    padding: 0;
   }
 
   .terminal {
     max-width: 100%;
-    padding: 18px;
-    border: none;
-    box-shadow: none;
-    background: #171717;
+    padding: 16px;
+    background: transparent;
   }
 
   .project-title {
