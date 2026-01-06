@@ -109,6 +109,10 @@ p {
   font-size: 0.85rem;
 }
 
+.timeline-item summary .summary-text {
+  display: inline;
+}
+
 .timeline-item summary::marker {
   color: #e6b35c;
 }
@@ -250,5 +254,34 @@ p {
 
   .timeline-item summary {
     font-size: 1rem;
+    text-align: left;
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+    padding-right: 18px;
+  }
+
+  .timeline-item summary .summary-text {
+    display: inline-block;
+    padding-right: 24px;
+  }
+
+  .timeline-item summary.is-overflow .summary-text {
+    animation: marquee-left 12s linear infinite;
+  }
+}
+
+@keyframes marquee-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-1 * var(--marquee-distance)));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .timeline-item summary .summary-text {
+    animation: none;
   }
 }
