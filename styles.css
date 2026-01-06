@@ -86,6 +86,7 @@ h2 {
 
 p {
   margin: 0 0 12px 0;
+  text-align: justify;
 }
 
 .timeline-item {
@@ -97,6 +98,7 @@ p {
   font-size: 1.1rem;
   color: #e6b35c;
   margin: 0 0 8px 0;
+  padding-left: 2.5px;
 }
 
 .timeline-item summary .summary-type {
@@ -109,12 +111,19 @@ p {
   font-size: 0.85rem;
 }
 
-.timeline-item summary .summary-text {
-  display: inline;
+.timeline-item summary .summary-fixed {
+  display: inline-block;
+  margin-left: 5px;
+}
+
+.timeline-item summary .summary-move {
+  display: inline-block;
 }
 
 .timeline-item summary .summary-clip {
-  display: inline;
+  display: inline-block;
+  margin-left: 3px;
+  overflow: hidden;
 }
 
 .timeline-item summary::marker {
@@ -268,16 +277,16 @@ p {
   .timeline-item summary .summary-clip {
     display: inline-block;
     vertical-align: middle;
-    margin-left: 2px;
+    max-width: var(--clip-width, 100%);
     overflow: hidden;
   }
 
-  .timeline-item summary .summary-text {
+  .timeline-item summary .summary-move {
     display: inline-block;
     padding-right: 24px;
   }
 
-  .timeline-item summary.is-overflow .summary-text {
+  .timeline-item summary.is-overflow .summary-move {
     animation: marquee-left 12s linear infinite;
   }
 }
@@ -293,7 +302,7 @@ p {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .timeline-item summary .summary-text {
+  .timeline-item summary .summary-move {
     animation: none;
   }
 }

@@ -18,8 +18,8 @@
         <h2 class="project-title">Quorum</h2>
         <h2 class="arc">ARCO 1: Herencia</h2>
         <details class="timeline-item">
-            <summary><span class="summary-clip"><span class="summary-text">1.3 <span
-                            class="summary-type">Colección</span> Pecados del Padre</span></span></summary>
+            <summary><span class="summary-fixed">1.3 <span class="summary-type">Colección</span></span> <span
+                    class="summary-clip"><span class="summary-move">Pecados del Padre</span></span></summary>
             <div class="content">
                 <p>
                     ▚▚▞▚▟▞▚▚▚▞▚▟
@@ -27,8 +27,8 @@
             </div>
         </details>
         <details class="timeline-item">
-            <summary><span class="summary-clip"><span class="summary-text">1.2 <span class="summary-type">Canción</span>
-                        R u with me? (La travesía)</span></span></summary>
+            <summary><span class="summary-fixed">1.2 <span class="summary-type">Canción</span></span> <span
+                    class="summary-clip"><span class="summary-move">R u with me? (La travesía)</span></span></summary>
             <div class="content">
                 <p>
                     [⋔⧜⧉⥊]: Aquel ser viaja a través de sus recuerdos, buscando erradicar su existencia del pasado. Lo
@@ -43,8 +43,8 @@
             </div>
         </details>
         <details class="timeline-item">
-            <summary><span class="summary-clip"><span class="summary-text">1.1 <span class="summary-type">Ensayo</span>
-                        Disrupción por castigo</span></span></summary>
+            <summary><span class="summary-fixed">1.1 <span class="summary-type">Ensayo</span></span> <span
+                    class="summary-clip"><span class="summary-move">Disrupción por castigo</span></span></summary>
             <div class="content">
                 <p>[No Identificado] - (▚▞▚▟)</p>
                 <p>
@@ -92,8 +92,8 @@
             </div>
         </details>
         <details class="timeline-item">
-            <summary><span class="summary-clip"><span class="summary-text">1.0 <span
-                            class="summary-type">Colección</span> [In⧉o t⧜e V⧠⟿⟲d]</span></span></summary>
+            <summary><span class="summary-fixed">1.0 <span class="summary-type">Colección</span></span> <span
+                    class="summary-clip"><span class="summary-move">[In⧉o t⧜e V⧠⟿⟲d]</span></span></summary>
             <div class="content">
                 <p>
                     [D⧉t⧜s c⧠rru⟿pt⧜s]
@@ -112,8 +112,8 @@
         <p class="line section-line section-line--spaced"><span class="prompt">#</span><span
                 class="section-title">Anexos</span><span class="line-fill" aria-hidden="true"></span></p>
         <details class="timeline-item" open>
-            <summary><span class="summary-clip"><span class="summary-text">1.0 <span class="summary-type">Audio</span>
-                        Complex</span></span></summary>
+            <summary><span class="summary-fixed">1.0 <span class="summary-type">Audio</span></span> <span
+                    class="summary-clip"><span class="summary-move">Complex</span></span></summary>
             <div class="content">
                 <audio controls preload="metadata">
                     <source src="audio/complex.wav" type="audio/wav">
@@ -124,14 +124,16 @@
     <script>
         const updateMarquee = () => {
             document.querySelectorAll(".timeline-item summary").forEach((summary) => {
-                const text = summary.querySelector(".summary-text");
+                const text = summary.querySelector(".summary-move");
+                const fixed = summary.querySelector(".summary-fixed");
                 const clip = summary.querySelector(".summary-clip");
-                if (!text) {
+                if (!text || !fixed || !clip) {
                     return;
                 }
                 summary.classList.remove("is-overflow");
                 text.style.removeProperty("--marquee-distance");
-                const availableWidth = clip ? clip.clientWidth : summary.clientWidth;
+                const availableWidth = Math.max(0, summary.clientWidth - fixed.offsetWidth - 12);
+                clip.style.setProperty("--clip-width", `${availableWidth}px`);
                 const overflow = text.scrollWidth - availableWidth;
                 if (overflow > 0) {
                     summary.classList.add("is-overflow");
