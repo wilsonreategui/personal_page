@@ -88,6 +88,16 @@ p {
   margin: 0 0 8px 0;
 }
 
+.timeline-item summary .summary-type {
+  color: #d9c08a;
+  padding: 0 6px;
+  border: 1px solid #3a3a3a;
+  border-radius: 2px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
 .timeline-item summary::marker {
   color: #e6b35c;
 }
