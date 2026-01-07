@@ -4,13 +4,14 @@ const prepareMarqueeText = (text) => {
   if (text.dataset.prepared === "true") {
     return;
   }
+  const html = text.innerHTML.trim();
   const content = document.createElement("span");
   content.className = "summary-content";
-  content.textContent = text.textContent.trim();
+  content.innerHTML = html;
   const clone = document.createElement("span");
   clone.className = "summary-clone";
   clone.setAttribute("aria-hidden", "true");
-  clone.textContent = content.textContent;
+  clone.innerHTML = html;
   text.textContent = "";
   text.append(content, clone);
   text.dataset.prepared = "true";
@@ -48,10 +49,10 @@ const updateMarquee = () => {
 const scheduleMarqueeUpdate = () => {
   updateMarquee();
   requestAnimationFrame(updateMarquee);
-  setTimeout(updateMarquee, 300);
+  setTimeout(updateMarquee, 150);
 };
 
-window.addEventListener("load", scheduleMarqueeUpdate);
+scheduleMarqueeUpdate();
 window.addEventListener("resize", updateMarquee);
 if (document.fonts && document.fonts.ready) {
   document.fonts.ready.then(updateMarquee);
