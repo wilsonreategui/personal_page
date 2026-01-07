@@ -73,6 +73,7 @@ h2 {
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  text-align: right;
   gap: 12px;
   border-right: 3px solid #e6b35c;
   padding-right: 10px;
@@ -126,28 +127,17 @@ p {
 }
 
 .timeline-item summary .summary-move {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--marquee-gap);
+  display: inline-block;
   white-space: nowrap;
   will-change: transform;
 }
 
-.timeline-item summary .summary-content,
-.timeline-item summary .summary-clone {
-  display: inline-block;
-}
-
-.timeline-item summary .summary-clone {
-  display: none;
-}
-
-.timeline-item summary.is-overflow .summary-clone {
+.timeline-item summary .summary-content {
   display: inline-block;
 }
 
 .timeline-item summary.is-overflow .summary-move {
-  animation: marquee-left 25s linear infinite;
+  animation: marquee-left 10s linear infinite;
   animation-delay: 0.5s;
 }
 
@@ -157,6 +147,51 @@ p {
   overflow: hidden;
   flex: 1 1 auto;
   min-width: 0;
+  position: relative;
+}
+
+.timeline-item summary .summary-clip::after {
+  content: attr(data-glitch);
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #e6b35c;
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  text-shadow: 0 0 6px rgba(230, 179, 92, 0.4);
+}
+
+.timeline-item summary .summary-clip.glitch-on::after {
+  opacity: 0.9;
+  animation: glitch-flicker 240ms steps(1, end);
+}
+
+.glitch-target {
+  position: relative;
+}
+
+.section-title.glitch-target {
+  display: inline-block;
+}
+
+.glitch-target::after {
+  content: attr(data-glitch);
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  color: currentColor;
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  text-align: inherit;
+  text-shadow: 0 0 6px rgba(230, 179, 92, 0.35);
+}
+
+.glitch-target.glitch-on::after {
+  opacity: 0.9;
+  animation: glitch-flicker 240ms steps(1, end);
 }
 
 .timeline-item summary::marker {
@@ -433,6 +468,29 @@ p {
 
   100% {
     transform: translateX(calc(-1 * var(--marquee-distance)));
+  }
+}
+
+@keyframes glitch-flicker {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  20% {
+    opacity: 0.9;
+    transform: translate(1px, -1px);
+  }
+  40% {
+    opacity: 0.4;
+    transform: translate(-1px, 1px);
+  }
+  60% {
+    opacity: 0.8;
+    transform: translate(2px, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(0, 0);
   }
 }
 

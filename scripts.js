@@ -6,6 +6,73 @@ const MARQUEE_GAP = (() => {
   return Number.isFinite(parsed) ? parsed : 24;
 })();
 let marqueeRaf = null;
+const GLITCH_STRINGS = [
+  "⟊⧖⧗⟡ ⋇⟜⧉⧠⟜⋇ ⥊⧙⋔⧜ ⧖⟡",
+  "⟜⋇⟜⧉⧠⟜⋇ ⥊",
+  "[⋔⧜]",
+  "▚▚▞▚▟▞▚▚▚▞▚▟",
+  "⟜⧙⋔⧉ ⥊",
+  "⟲⟲⟿⟿⟲ ⟿⟲ ⟿⟿⟲",
+  "⟡9: ⧗:",
+  "[In⧉ursi⧜n 1]",
+];
+const GLITCH_CHARS = [
+  "⟊",
+  "⧖",
+  "⧗",
+  "⟡",
+  "⋇",
+  "⟜",
+  "⧉",
+  "⧠",
+  "⥊",
+  "⧙",
+  "⋔",
+  "⧜",
+  "▚",
+  "▞",
+  "▟",
+  "⟲",
+  "⟿",
+];
+const GLITCH_MIN_DELAY = 3500;
+const GLITCH_MAX_DELAY = 22000;
+const GLITCH_DURATION = 240;
+const GLITCH_CHAR_DURATION = 1000;
+const GLITCH_INITIAL_DELAY = 90000;
+let glitchActive = false;
+let glitchEnabled = false;
+
+const registerTitleGlitches = () => {
+  document
+    .querySelectorAll(".section-title, .project-title, .arc, h1")
+    .forEach((element) => {
+      element.classList.add("glitch-target");
+    });
+};
+
+const collectGlitchTargets = () => {
+  const targets = [];
+  document.querySelectorAll(".summary-move").forEach((text) => {
+    prepareMarqueeText(text);
+    const content = text.querySelector(".summary-content");
+    const clip = text.closest(".summary-clip");
+    if (content && clip) {
+      targets.push({ overlay: clip, content });
+    }
+  });
+  document.querySelectorAll(".glitch-target").forEach((element) => {
+    targets.push({ overlay: element, content: element });
+  });
+  return targets;
+};
+
+const randomDelayMs = () => {
+  const spread = GLITCH_MAX_DELAY - GLITCH_MIN_DELAY;
+  const skew = Math.random() ** 2.2;
+  const jitter = (Math.random() - 0.5) * 1400;
+  return Math.max(800, GLITCH_MIN_DELAY + spread * skew + jitter);
+};
 
 const prepareMarqueeText = (text) => {
   if (text.dataset.prepared === "true") {
@@ -15,13 +82,113 @@ const prepareMarqueeText = (text) => {
   const content = document.createElement("span");
   content.className = "summary-content";
   content.innerHTML = html;
-  const clone = document.createElement("span");
-  clone.className = "summary-clone";
-  clone.setAttribute("aria-hidden", "true");
-  clone.innerHTML = html;
   text.textContent = "";
-  text.append(content, clone);
+  text.append(content);
   text.dataset.prepared = "true";
+};
+
+const bindGlitch = (text, clip) => {
+  if (text.dataset.glitchBound === "true") {
+    return;
+  }
+  text.dataset.glitchCount = "0";
+  text.addEventListener("animationiteration", () => {
+    if (!glitchEnabled) {
+      return;
+    }
+    const count = Number(text.dataset.glitchCount || "0") + 1;
+    text.dataset.glitchCount = String(count);
+    if (Math.random() > 0.6) {
+      return;
+    }
+    const glitch =
+      GLITCH_STRINGS[Math.floor(Math.random() * GLITCH_STRINGS.length)];
+    clip.dataset.glitch = glitch;
+    clip.classList.add("glitch-on");
+    const content = text.querySelector(".summary-content");
+    const restore = content ? applyGlitchChars(content, 0.15) : null;
+    setTimeout(() => {
+      clip.classList.remove("glitch-on");
+    }, GLITCH_DURATION);
+    setTimeout(() => {
+      if (restore) {
+        restore();
+      }
+    }, GLITCH_CHAR_DURATION);
+  });
+  text.dataset.glitchBound = "true";
+};
+
+const applyGlitchChars = (root, intensity = 0.15) => {
+  const originals = new Map();
+  const walker = document.createTreeWalker(
+    root,
+    NodeFilter.SHOW_TEXT,
+    {
+      acceptNode: (node) => {
+        if (!node.nodeValue || !node.nodeValue.trim()) {
+          return NodeFilter.FILTER_REJECT;
+        }
+        return NodeFilter.FILTER_ACCEPT;
+      },
+    }
+  );
+  while (walker.nextNode()) {
+    const node = walker.currentNode;
+    const value = node.nodeValue;
+    const chars = value.split("");
+    const indices = [];
+    const maxChanges = Math.max(1, Math.floor(chars.length * intensity));
+    while (indices.length < maxChanges) {
+      const idx = Math.floor(Math.random() * chars.length);
+      if (chars[idx] === " " || indices.includes(idx)) {
+        continue;
+      }
+      indices.push(idx);
+      chars[idx] = GLITCH_CHARS[Math.floor(Math.random() * GLITCH_CHARS.length)];
+    }
+    originals.set(node, value);
+    node.nodeValue = chars.join("");
+  }
+  return () => {
+    originals.forEach((value, node) => {
+      node.nodeValue = value;
+    });
+  };
+};
+
+const scheduleRandomGlitch = () => {
+  const delay = Math.floor(randomDelayMs());
+  setTimeout(() => {
+    if (!glitchEnabled) {
+      scheduleRandomGlitch();
+      return;
+    }
+    if (glitchActive) {
+      scheduleRandomGlitch();
+      return;
+    }
+    const targets = collectGlitchTargets();
+    if (!targets.length) {
+      scheduleRandomGlitch();
+      return;
+    }
+    const { overlay, content } =
+      targets[Math.floor(Math.random() * targets.length)];
+    glitchActive = true;
+    overlay.dataset.glitch =
+      GLITCH_STRINGS[Math.floor(Math.random() * GLITCH_STRINGS.length)];
+    overlay.classList.add("glitch-on");
+    const restore = applyGlitchChars(content, 0.06);
+    setTimeout(() => {
+      overlay.classList.remove("glitch-on");
+    }, GLITCH_DURATION);
+    setTimeout(() => {
+      restore();
+      glitchActive = false;
+      scheduleRandomGlitch();
+    }, GLITCH_CHAR_DURATION);
+  }, delay);
 };
 
 const updateMarquee = () => {
@@ -33,6 +200,7 @@ const updateMarquee = () => {
       return;
     }
     prepareMarqueeText(text);
+    bindGlitch(text, clip);
     const content = text.querySelector(".summary-content");
     if (!content) {
       return;
@@ -44,7 +212,7 @@ const updateMarquee = () => {
       summary.classList.add("is-overflow");
       text.style.setProperty(
         "--marquee-distance",
-        `${contentWidth + MARQUEE_GAP}px`
+        `${overflow + MARQUEE_GAP}px`
       );
     } else {
       summary.classList.remove("is-overflow");
@@ -69,11 +237,16 @@ const scheduleMarqueeUpdate = () => {
   setTimeout(updateMarquee, 150);
 };
 
+registerTitleGlitches();
 scheduleMarqueeUpdate();
 window.addEventListener("resize", requestMarqueeUpdate);
 if (document.fonts && document.fonts.ready) {
   document.fonts.ready.then(requestMarqueeUpdate);
 }
+setTimeout(() => {
+  glitchEnabled = true;
+  scheduleRandomGlitch();
+}, GLITCH_INITIAL_DELAY);
 
 const formatTime = (value) => {
   if (!Number.isFinite(value)) {
