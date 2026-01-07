@@ -1,4 +1,11 @@
-const MARQUEE_GAP = 24;
+const MARQUEE_GAP = (() => {
+  const value = getComputedStyle(document.documentElement)
+    .getPropertyValue("--marquee-gap")
+    .trim();
+  const parsed = Number.parseFloat(value);
+  return Number.isFinite(parsed) ? parsed : 24;
+})();
+let marqueeRaf = null;
 
 const prepareMarqueeText = (text) => {
   if (text.dataset.prepared === "true") {
@@ -30,9 +37,6 @@ const updateMarquee = () => {
     if (!content) {
       return;
     }
-    summary.classList.remove("is-overflow");
-    text.style.removeProperty("--marquee-distance");
-    text.style.setProperty("--marquee-gap", `${MARQUEE_GAP}px`);
     const availableWidth = clip.getBoundingClientRect().width;
     const contentWidth = content.getBoundingClientRect().width;
     const overflow = contentWidth - availableWidth;
@@ -42,20 +46,33 @@ const updateMarquee = () => {
         "--marquee-distance",
         `${contentWidth + MARQUEE_GAP}px`
       );
+    } else {
+      summary.classList.remove("is-overflow");
+      text.style.removeProperty("--marquee-distance");
     }
+  });
+};
+
+const requestMarqueeUpdate = () => {
+  if (marqueeRaf !== null) {
+    return;
+  }
+  marqueeRaf = requestAnimationFrame(() => {
+    marqueeRaf = null;
+    updateMarquee();
   });
 };
 
 const scheduleMarqueeUpdate = () => {
   updateMarquee();
-  requestAnimationFrame(updateMarquee);
+  requestMarqueeUpdate();
   setTimeout(updateMarquee, 150);
 };
 
 scheduleMarqueeUpdate();
-window.addEventListener("resize", updateMarquee);
+window.addEventListener("resize", requestMarqueeUpdate);
 if (document.fonts && document.fonts.ready) {
-  document.fonts.ready.then(updateMarquee);
+  document.fonts.ready.then(requestMarqueeUpdate);
 }
 
 const formatTime = (value) => {
@@ -102,9 +119,13 @@ const initAudioPlayers = () => {
       }
       const clamped = Math.min(Math.max(clientX - rect.left, 0), rect.width);
       audio.currentTime = (clamped / rect.width) * audio.duration;
+      updateProgress();
     };
 
     let seeking = false;
+    const stopSeeking = () => {
+      seeking = false;
+    };
     bar.addEventListener("pointerdown", (event) => {
       seeking = true;
       if (bar.setPointerCapture) {
@@ -118,12 +139,10 @@ const initAudioPlayers = () => {
       }
       seekTo(event.clientX);
     });
-    bar.addEventListener("pointerup", () => {
-      seeking = false;
-    });
-    bar.addEventListener("pointerleave", () => {
-      seeking = false;
-    });
+    bar.addEventListener("pointerup", stopSeeking);
+    bar.addEventListener("pointerleave", stopSeeking);
+    bar.addEventListener("pointercancel", stopSeeking);
+    bar.addEventListener("lostpointercapture", stopSeeking);
     bar.addEventListener("keydown", (event) => {
       if (!audio.duration) {
         return;
@@ -135,6 +154,7 @@ const initAudioPlayers = () => {
           Math.max(audio.currentTime + delta, 0),
           audio.duration
         );
+        updateProgress();
       }
     });
 
@@ -147,10 +167,12 @@ const initAudioPlayers = () => {
     });
 
     audio.addEventListener("loadedmetadata", updateProgress);
+    audio.addEventListener("durationchange", updateProgress);
     audio.addEventListener("timeupdate", updateProgress);
     audio.addEventListener("play", updateButton);
     audio.addEventListener("pause", updateButton);
     audio.addEventListener("ended", updateButton);
+    audio.addEventListener("ended", updateProgress);
 
     updateButton();
     updateProgress();

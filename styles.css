@@ -1,5 +1,9 @@
 :root {
   color-scheme: dark;
+  --marquee-gap: 24px;
+  --scanline: repeating-linear-gradient(180deg,
+      rgba(0, 0, 0, 0.35) 0 2px,
+      rgba(0, 0, 0, 0) 2px 4px);
 }
 
 body {
@@ -16,9 +20,7 @@ body::before {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  background: repeating-linear-gradient(180deg,
-      rgba(0, 0, 0, 0.35) 0 2px,
-      rgba(0, 0, 0, 0) 2px 4px);
+  background: var(--scanline);
   opacity: 0.35;
 }
 
@@ -126,7 +128,7 @@ p {
 .timeline-item summary .summary-move {
   display: inline-flex;
   align-items: center;
-  gap: var(--marquee-gap, 24px);
+  gap: var(--marquee-gap);
   white-space: nowrap;
   will-change: transform;
 }
@@ -225,9 +227,7 @@ p {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: repeating-linear-gradient(180deg,
-      rgba(0, 0, 0, 0.35) 0 2px,
-      rgba(0, 0, 0, 0) 2px 4px);
+  background: var(--scanline);
   opacity: 0.35;
 }
 
