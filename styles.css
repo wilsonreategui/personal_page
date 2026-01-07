@@ -147,7 +147,7 @@ p {
 }
 
 .timeline-item summary.is-overflow .summary-move {
-  animation: marquee-left 12s linear infinite;
+  animation: marquee-left 25s linear infinite;
   animation-delay: 0.5s;
 }
 
