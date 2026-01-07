@@ -1,3 +1,21 @@
+const MARQUEE_GAP = 24;
+
+const prepareMarqueeText = (text) => {
+  if (text.dataset.prepared === "true") {
+    return;
+  }
+  const content = document.createElement("span");
+  content.className = "summary-content";
+  content.textContent = text.textContent.trim();
+  const clone = document.createElement("span");
+  clone.className = "summary-clone";
+  clone.setAttribute("aria-hidden", "true");
+  clone.textContent = content.textContent;
+  text.textContent = "";
+  text.append(content, clone);
+  text.dataset.prepared = "true";
+};
+
 const updateMarquee = () => {
   document.querySelectorAll(".timeline-item summary").forEach((summary) => {
     const text = summary.querySelector(".summary-move");
@@ -6,19 +24,38 @@ const updateMarquee = () => {
     if (!text || !fixed || !clip) {
       return;
     }
+    prepareMarqueeText(text);
+    const content = text.querySelector(".summary-content");
+    if (!content) {
+      return;
+    }
     summary.classList.remove("is-overflow");
     text.style.removeProperty("--marquee-distance");
-    const availableWidth = clip.clientWidth + 20;
-    const overflow = text.scrollWidth - availableWidth;
+    text.style.setProperty("--marquee-gap", `${MARQUEE_GAP}px`);
+    const availableWidth = clip.getBoundingClientRect().width;
+    const contentWidth = content.getBoundingClientRect().width;
+    const overflow = contentWidth - availableWidth;
     if (overflow > 0) {
       summary.classList.add("is-overflow");
-      text.style.setProperty("--marquee-distance", `${overflow + 24}px`);
+      text.style.setProperty(
+        "--marquee-distance",
+        `${contentWidth + MARQUEE_GAP}px`
+      );
     }
   });
 };
 
-window.addEventListener("load", updateMarquee);
+const scheduleMarqueeUpdate = () => {
+  updateMarquee();
+  requestAnimationFrame(updateMarquee);
+  setTimeout(updateMarquee, 300);
+};
+
+window.addEventListener("load", scheduleMarqueeUpdate);
 window.addEventListener("resize", updateMarquee);
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(updateMarquee);
+}
 
 const formatTime = (value) => {
   if (!Number.isFinite(value)) {

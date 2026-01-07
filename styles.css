@@ -124,7 +124,29 @@ p {
 }
 
 .timeline-item summary .summary-move {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--marquee-gap, 24px);
+  white-space: nowrap;
+  will-change: transform;
+}
+
+.timeline-item summary .summary-content,
+.timeline-item summary .summary-clone {
   display: inline-block;
+}
+
+.timeline-item summary .summary-clone {
+  display: none;
+}
+
+.timeline-item summary.is-overflow .summary-clone {
+  display: inline-block;
+}
+
+.timeline-item summary.is-overflow .summary-move {
+  animation: marquee-left 12s linear infinite;
+  animation-delay: 1s;
 }
 
 .timeline-item summary .summary-clip {
@@ -378,7 +400,7 @@ p {
     font-size: 1rem;
     text-align: left;
     position: relative;
-    padding-right: 18px;
+    padding-right: 10px;
   }
 
   .timeline-item summary .summary-clip {
@@ -388,13 +410,8 @@ p {
   }
 
   .timeline-item summary .summary-move {
-    display: inline-block;
+    display: inline-flex;
     padding-right: 24px;
-  }
-
-  .timeline-item summary.is-overflow .summary-move {
-    animation: marquee-left 12s linear infinite;
-    animation-delay: 1.5s;
   }
 
   .audio-player {
