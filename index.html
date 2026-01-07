@@ -115,9 +115,18 @@
             <summary><span class="summary-fixed">1.0 <span class="summary-type">Audio</span></span> <span
                     class="summary-clip"><span class="summary-move">Complex</span></span></summary>
             <div class="content">
-                <audio controls preload="metadata">
-                    <source src="audio/complex.wav" type="audio/wav">
-                </audio>
+                <div class="audio-player">
+                    <button class="audio-toggle" type="button" aria-label="Reproducir" data-state="play"></button>
+                    <div class="audio-bar" role="slider" aria-label="Barra de reproduccion" aria-valuemin="0"
+                        aria-valuemax="100" aria-valuenow="0" tabindex="0">
+                        <div class="audio-bar-fill"></div>
+                        <div class="audio-bar-head"></div>
+                    </div>
+                    <span class="audio-time">0:00 / 0:00</span>
+                    <audio class="audio-element" preload="metadata">
+                        <source src="audio/complex.wav" type="audio/wav">
+                    </audio>
+                </div>
             </div>
         </details>
     </main>
