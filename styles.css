@@ -394,6 +394,7 @@ p {
 
   .timeline-item summary.is-overflow .summary-move {
     animation: marquee-left 12s linear infinite;
+    animation-delay: 1.5s;
   }
 
   .audio-player {
