@@ -87,38 +87,6 @@ const prepareMarqueeText = (text) => {
   text.dataset.prepared = "true";
 };
 
-const bindGlitch = (text, clip) => {
-  if (text.dataset.glitchBound === "true") {
-    return;
-  }
-  text.dataset.glitchCount = "0";
-  text.addEventListener("animationiteration", () => {
-    if (!glitchEnabled) {
-      return;
-    }
-    const count = Number(text.dataset.glitchCount || "0") + 1;
-    text.dataset.glitchCount = String(count);
-    if (Math.random() > 0.6) {
-      return;
-    }
-    const glitch =
-      GLITCH_STRINGS[Math.floor(Math.random() * GLITCH_STRINGS.length)];
-    clip.dataset.glitch = glitch;
-    clip.classList.add("glitch-on");
-    const content = text.querySelector(".summary-content");
-    const restore = content ? applyGlitchChars(content, 0.15) : null;
-    setTimeout(() => {
-      clip.classList.remove("glitch-on");
-    }, GLITCH_DURATION);
-    setTimeout(() => {
-      if (restore) {
-        restore();
-      }
-    }, GLITCH_CHAR_DURATION);
-  });
-  text.dataset.glitchBound = "true";
-};
-
 const applyGlitchChars = (root, intensity = 0.15) => {
   const originals = new Map();
   const walker = document.createTreeWalker(
@@ -200,7 +168,6 @@ const updateMarquee = () => {
       return;
     }
     prepareMarqueeText(text);
-    bindGlitch(text, clip);
     const content = text.querySelector(".summary-content");
     if (!content) {
       return;
