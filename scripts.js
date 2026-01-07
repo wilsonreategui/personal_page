@@ -40,8 +40,12 @@ const GLITCH_MAX_DELAY = 22000;
 const GLITCH_DURATION = 240;
 const GLITCH_CHAR_DURATION = 1000;
 const GLITCH_INITIAL_DELAY = 90000;
+const GLITCH_CORRUPT_AFTER = 180000;
+const GLITCH_CORRUPT_CHANCE = 0.12;
+const GLITCH_CORRUPT_INTENSITY = 0.1;
 let glitchActive = false;
 let glitchEnabled = false;
+const glitchStart = performance.now();
 
 const registerTitleGlitches = () => {
   document
@@ -125,6 +129,37 @@ const applyGlitchChars = (root, intensity = 0.15) => {
   };
 };
 
+const applyPermanentGlitchChars = (root, intensity = 0.1) => {
+  const walker = document.createTreeWalker(
+    root,
+    NodeFilter.SHOW_TEXT,
+    {
+      acceptNode: (node) => {
+        if (!node.nodeValue || !node.nodeValue.trim()) {
+          return NodeFilter.FILTER_REJECT;
+        }
+        return NodeFilter.FILTER_ACCEPT;
+      },
+    }
+  );
+  while (walker.nextNode()) {
+    const node = walker.currentNode;
+    const value = node.nodeValue;
+    const chars = value.split("");
+    const indices = [];
+    const maxChanges = Math.max(1, Math.floor(chars.length * intensity));
+    while (indices.length < maxChanges) {
+      const idx = Math.floor(Math.random() * chars.length);
+      if (chars[idx] === " " || indices.includes(idx)) {
+        continue;
+      }
+      indices.push(idx);
+      chars[idx] = GLITCH_CHARS[Math.floor(Math.random() * GLITCH_CHARS.length)];
+    }
+    node.nodeValue = chars.join("");
+  }
+};
+
 const scheduleRandomGlitch = () => {
   const delay = Math.floor(randomDelayMs());
   setTimeout(() => {
@@ -143,6 +178,10 @@ const scheduleRandomGlitch = () => {
     }
     const { overlay, content } =
       targets[Math.floor(Math.random() * targets.length)];
+    const shouldCorrupt =
+      glitchEnabled &&
+      performance.now() - glitchStart >= GLITCH_CORRUPT_AFTER &&
+      Math.random() < GLITCH_CORRUPT_CHANCE;
     glitchActive = true;
     overlay.dataset.glitch =
       GLITCH_STRINGS[Math.floor(Math.random() * GLITCH_STRINGS.length)];
@@ -153,6 +192,9 @@ const scheduleRandomGlitch = () => {
     }, GLITCH_DURATION);
     setTimeout(() => {
       restore();
+      if (shouldCorrupt) {
+        applyPermanentGlitchChars(content, GLITCH_CORRUPT_INTENSITY);
+      }
       glitchActive = false;
       scheduleRandomGlitch();
     }, GLITCH_CHAR_DURATION);
