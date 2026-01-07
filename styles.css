@@ -99,10 +99,11 @@ p {
   font-size: 1.1rem;
   color: #e6b35c;
   margin: 0 0 8px 0;
-  padding-left: 2.5px;
+  padding-left: 20px;
   display: flex;
   align-items: center;
   gap: 8px;
+  position: relative;
 }
 
 .timeline-item summary .summary-type {
@@ -133,6 +134,24 @@ p {
 
 .timeline-item summary::marker {
   color: #e6b35c;
+}
+
+.timeline-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.timeline-item summary::before {
+  content: "⟜";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #e6b35c;
+}
+
+.timeline-item[open] summary::before {
+  content: "⟟";
+  color: #f2c477;
 }
 
 .timeline-item[open] summary {
