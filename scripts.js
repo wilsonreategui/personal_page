@@ -91,6 +91,233 @@ const prepareMarqueeText = (text) => {
   text.dataset.prepared = "true";
 };
 
+const collectTypewriterNodes = (root) => {
+  const nodes = [];
+  const walker = document.createTreeWalker(
+    root,
+    NodeFilter.SHOW_TEXT,
+    {
+      acceptNode: (node) => {
+        if (!node.nodeValue || !node.nodeValue.trim()) {
+          return NodeFilter.FILTER_REJECT;
+        }
+        const parent = node.parentElement;
+        if (!parent) {
+          return NodeFilter.FILTER_REJECT;
+        }
+        const closedDetails = parent.closest("details:not([open])");
+        if (closedDetails && !parent.closest("summary")) {
+          return NodeFilter.FILTER_REJECT;
+        }
+        if (
+          parent.closest(
+            "script, style, noscript, .audio-player, [aria-hidden='true']"
+          )
+        ) {
+          return NodeFilter.FILTER_REJECT;
+        }
+        return NodeFilter.FILTER_ACCEPT;
+      },
+    }
+  );
+  while (walker.nextNode()) {
+    const node = walker.currentNode;
+    nodes.push({ node, text: node.nodeValue });
+  }
+  return nodes;
+};
+
+const collectTypewriterSections = () => {
+  const sections = Array.from(
+    document.querySelectorAll("[data-typewriter-section]")
+  );
+  if (sections.length) {
+    return sections;
+  }
+  const root = document.querySelector(".terminal");
+  return root ? [root] : [];
+};
+
+const startTypewriter = () => {
+  const sections = collectTypewriterSections();
+  if (!sections.length) {
+    return null;
+  }
+  if (
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  ) {
+    sections.forEach((section) => {
+      section.classList.remove("is-typing");
+      section.classList.add("is-loaded");
+    });
+    return null;
+  }
+
+  document.querySelectorAll(".summary-move").forEach((text) => {
+    prepareMarqueeText(text);
+  });
+
+  const sectionQueue = sections
+    .map((section) => ({
+      element: section,
+      nodes: collectTypewriterNodes(section),
+    }))
+    .filter((section) => section.nodes.length);
+  if (!sectionQueue.length) {
+    return null;
+  }
+
+  sections.forEach((section) => {
+    section.classList.remove("is-typing", "is-loaded");
+  });
+  sectionQueue.forEach((section) => {
+    section.nodes.forEach((item) => {
+      item.node.nodeValue = "";
+    });
+  });
+
+  const getDelayRange = (totalChars) => {
+    const targetDurationMs = 3800;
+    const baseDelay = Math.min(
+      10,
+      Math.max(2, Math.round(targetDurationMs / Math.max(totalChars, 1)))
+    );
+    const minDelay = Math.max(1, Math.round(baseDelay * 0.35));
+    const maxDelay = Math.max(minDelay + 2, Math.round(baseDelay * 1.4));
+    return { minDelay, maxDelay };
+  };
+  const heavyPunctuation = new Set([".", "!", "?"]);
+  const mediumPunctuation = new Set([",", ";", ":"]);
+  const whitespaceChars = new Set([" ", "\n", "\t"]);
+  const sectionPauseMs = 200;
+
+  let sectionIndex = 0;
+  let nodeIndex = 0;
+  let charIndex = 0;
+  let minDelay = 0;
+  let maxDelay = 0;
+  let timerId = null;
+  let resolveDone = null;
+  let finished = false;
+
+  const donePromise = new Promise((resolve) => {
+    resolveDone = resolve;
+  });
+
+  const cleanup = () => {
+    if (timerId) {
+      clearTimeout(timerId);
+      timerId = null;
+    }
+    document.removeEventListener("keydown", skipTyping);
+    document.removeEventListener("pointerdown", skipTyping);
+    if (resolveDone) {
+      resolveDone();
+    }
+  };
+
+  const finishTyping = () => {
+    if (finished) {
+      return;
+    }
+    finished = true;
+    cleanup();
+  };
+
+  const completeAll = () => {
+    sectionQueue.forEach((section) => {
+      section.nodes.forEach((item) => {
+        item.node.nodeValue = item.text;
+      });
+      section.element.classList.remove("is-typing");
+      section.element.classList.add("is-loaded");
+    });
+    scheduleMarqueeUpdate();
+    finishTyping();
+  };
+
+  const skipTyping = () => {
+    completeAll();
+  };
+
+  const startSection = () => {
+    if (sectionIndex >= sectionQueue.length) {
+      finishTyping();
+      return;
+    }
+    const section = sectionQueue[sectionIndex];
+    section.element.classList.remove("is-loaded");
+    section.element.classList.add("is-typing");
+    const totalChars = section.nodes.reduce(
+      (sum, item) => sum + item.text.length,
+      0
+    );
+    const delayRange = getDelayRange(totalChars);
+    minDelay = delayRange.minDelay;
+    maxDelay = delayRange.maxDelay;
+    nodeIndex = 0;
+    charIndex = 0;
+    timerId = window.setTimeout(nextChar, 120);
+  };
+
+  const finishSection = () => {
+    const section = sectionQueue[sectionIndex];
+    if (section) {
+      section.element.classList.remove("is-typing");
+      section.element.classList.add("is-loaded");
+    }
+    scheduleMarqueeUpdate();
+    sectionIndex += 1;
+    if (sectionIndex >= sectionQueue.length) {
+      finishTyping();
+      return;
+    }
+    timerId = window.setTimeout(startSection, sectionPauseMs);
+  };
+
+  const nextChar = () => {
+    const section = sectionQueue[sectionIndex];
+    if (!section) {
+      finishTyping();
+      return;
+    }
+    if (nodeIndex >= section.nodes.length) {
+      finishSection();
+      return;
+    }
+    const current = section.nodes[nodeIndex];
+    const char = current.text.charAt(charIndex);
+    current.node.nodeValue += char;
+    charIndex += 1;
+    if (charIndex >= current.text.length) {
+      nodeIndex += 1;
+      charIndex = 0;
+    }
+    if (nodeIndex >= section.nodes.length) {
+      finishSection();
+      return;
+    }
+    let delay = minDelay + Math.random() * (maxDelay - minDelay);
+    if (whitespaceChars.has(char)) {
+      delay = Math.max(2, minDelay * 0.3);
+    } else if (heavyPunctuation.has(char)) {
+      delay += 45 + Math.random() * 70;
+    } else if (mediumPunctuation.has(char)) {
+      delay += 25 + Math.random() * 40;
+    } else if (Math.random() < 0.015) {
+      delay += 35 + Math.random() * 50;
+    }
+    timerId = window.setTimeout(nextChar, delay);
+  };
+
+  document.addEventListener("keydown", skipTyping);
+  document.addEventListener("pointerdown", skipTyping);
+
+  startSection();
+  return donePromise;
+};
+
 const applyGlitchChars = (root, intensity = 0.15) => {
   const originals = new Map();
   const walker = document.createTreeWalker(
@@ -247,7 +474,14 @@ const scheduleMarqueeUpdate = () => {
 };
 
 registerTitleGlitches();
-scheduleMarqueeUpdate();
+const typewriterDone = startTypewriter();
+if (typewriterDone) {
+  typewriterDone.then(() => {
+    scheduleMarqueeUpdate();
+  });
+} else {
+  scheduleMarqueeUpdate();
+}
 window.addEventListener("resize", requestMarqueeUpdate);
 if (document.fonts && document.fonts.ready) {
   document.fonts.ready.then(requestMarqueeUpdate);

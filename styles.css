@@ -353,6 +353,78 @@ p {
   gap: 10px;
 }
 
+.type-section {
+  position: relative;
+}
+
+.section-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 16px;
+  border: 1px solid #3a3a3a;
+  color: #e6b35c;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  opacity: 0;
+  transition: opacity 160ms ease;
+  font-family: inherit;
+}
+
+.section-icon::before {
+  content: "[ ]";
+}
+
+.type-section.is-typing .section-icon,
+.type-section.is-loaded .section-icon {
+  opacity: 1;
+}
+
+.type-section.is-typing .section-icon::before {
+  animation: decompress-icon 1.2s steps(1, end) infinite;
+}
+
+.type-section.is-loaded .section-icon::before {
+  content: "[OK]";
+}
+
+.name-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.name-row h1 {
+  margin: 0;
+  margin-left: 5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 1 auto;
+}
+
+.name-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  color: #e6b35c;
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.name-icon::before {
+  content: "|";
+  display: inline-block;
+  animation: name-spin 0.9s steps(4, end) infinite;
+  transform-origin: center;
+}
+
 .section-line {
   text-transform: uppercase;
   letter-spacing: 0.18em;
@@ -425,6 +497,21 @@ p {
 
   .line {
     gap: 8px;
+  }
+
+  .section-icon {
+    width: 40px;
+    font-size: 0.65rem;
+  }
+
+  .name-row {
+    gap: 12px;
+  }
+
+  .name-icon {
+    width: 16px;
+    height: 16px;
+    font-size: 0.85rem;
   }
 
   .line-fill {
@@ -502,8 +589,61 @@ p {
   }
 }
 
+@keyframes decompress-icon {
+  0% {
+    content: "[ ]";
+  }
+
+  20% {
+    content: "[> ]";
+  }
+
+  40% {
+    content: "[>>]";
+  }
+
+  60% {
+    content: "[>>>]";
+  }
+
+  80% {
+    content: "[>>]";
+  }
+
+  100% {
+    content: "[> ]";
+  }
+}
+
+@keyframes name-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(90deg);
+  }
+
+  50% {
+    transform: rotate(180deg);
+  }
+
+  75% {
+    transform: rotate(270deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .timeline-item summary .summary-move {
+    animation: none;
+  }
+
+  .section-icon::before,
+  .name-icon::before {
     animation: none;
   }
 }
