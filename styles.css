@@ -1,18 +1,33 @@
 :root {
   color-scheme: dark;
   --marquee-gap: 24px;
+  --font-body: "IBM Plex Mono", "Space Mono", "Fira Mono", "Cascadia Mono",
+    "Courier New", monospace;
+  --font-display: "VT323", "IBM Plex Mono", "Space Mono", "Fira Mono",
+    "Courier New", monospace;
+  --glow-amber: 0 0 8px rgba(230, 179, 92, 0.22),
+    0 0 18px rgba(230, 179, 92, 0.12);
+  --glow-ivory: 0 0 6px rgba(240, 240, 240, 0.22),
+    0 0 14px rgba(240, 240, 240, 0.08);
+  --glow-depth: 0 0 16px rgba(0, 0, 0, 0.45);
+  --glow-calc: 0 0 2px rgba(255, 233, 170, 0.55),
+    0 0 6px rgba(230, 179, 92, 0.35),
+    0 0 14px rgba(230, 179, 92, 0.22);
   --scanline: repeating-linear-gradient(180deg,
       rgba(0, 0, 0, 0.35) 0 2px,
       rgba(0, 0, 0, 0) 2px 4px);
 }
 
 body {
-  font-family: "Courier New", Courier, monospace;
+  font-family: var(--font-body);
+  font-size: 16px;
   margin: 0;
   padding: 32px;
-  line-height: 1.6;
-  color: #e6e6e6;
+  line-height: 1.65;
+  letter-spacing: 0.02em;
+  color: #efe7d2;
   background: #121212;
+  text-shadow: var(--glow-depth);
 }
 
 body::before {
@@ -43,33 +58,37 @@ h1,
 h2 {
   margin: 0 0 16px 0;
   font-weight: normal;
-  color: #f0f0f0;
+  color: #f7f0da;
   margin-left: 5px;
+  font-family: var(--font-display);
+  text-shadow: var(--glow-calc);
 }
 
 h1 {
-  font-size: 1.6rem;
+  font-size: 1.85rem;
+  letter-spacing: 0.05em;
 }
 
 h2 {
-  font-size: 1.1rem;
-  color: #cfcfcf;
+  font-size: 1.15rem;
+  color: #e9dfc2;
 }
 
 .project-title {
-  font-size: 1.45rem;
-  color: #f3f3f3;
+  font-size: 1.6rem;
+  color: #fff1c9;
   text-transform: uppercase;
   letter-spacing: 0.14em;
   font-weight: bold;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.08);
+  text-shadow: var(--glow-calc);
   text-align: right;
+  font-family: var(--font-display);
 }
 
 .arc {
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #dcdcdc;
+  color: #efe2c1;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -77,6 +96,8 @@ h2 {
   gap: 12px;
   border-right: 3px solid #e6b35c;
   padding-right: 10px;
+  font-family: var(--font-display);
+  text-shadow: var(--glow-calc);
 }
 
 .arc::before {
@@ -91,6 +112,8 @@ h2 {
 p {
   margin: 0 0 12px 0;
   text-align: justify;
+  font-size: 0.98rem;
+  text-shadow: var(--glow-calc);
 }
 
 .timeline-item {
@@ -100,7 +123,7 @@ p {
 .timeline-item summary {
   cursor: pointer;
   font-size: 1.1rem;
-  color: #e6b35c;
+  color: #f3d58f;
   margin: 0 0 8px 0;
   padding-left: 20px;
   display: flex;
@@ -108,6 +131,8 @@ p {
   gap: 8px;
   position: relative;
   white-space: nowrap;
+  font-family: var(--font-display);
+  text-shadow: var(--glow-calc);
 }
 
 .timeline-item summary .summary-type {
@@ -382,11 +407,19 @@ p {
 }
 
 .type-section.is-typing .section-icon::before {
-  animation: decompress-icon 1.2s steps(1, end) infinite;
+  animation: decompress-icon 5s steps(1, end) infinite;
 }
 
 .type-section.is-loaded .section-icon::before {
   content: "[OK]";
+}
+
+.section-icon--loop {
+  opacity: 1;
+}
+
+.section-icon--loop::before {
+  animation: decompress-icon 6s steps(1, end) infinite;
 }
 
 .name-row {
@@ -421,8 +454,12 @@ p {
 .name-icon::before {
   content: "|";
   display: inline-block;
-  animation: name-spin 0.9s steps(4, end) infinite;
+  animation: name-spin 20s steps(4, end) infinite;
   transform-origin: center;
+}
+
+.project-title .name-icon {
+  margin-left: 12px;
 }
 
 .section-line {
@@ -430,6 +467,8 @@ p {
   letter-spacing: 0.18em;
   font-size: 0.95rem;
   color: #bdbdbd;
+  font-family: var(--font-display);
+  text-shadow: var(--glow-calc);
 }
 
 .section-title {
@@ -447,8 +486,9 @@ p {
 }
 
 .prompt {
-  color: #e6b35c;
+  color: #f3d58f;
   margin-right: 8px;
+  text-shadow: var(--glow-calc);
 }
 
 .line-fill {
@@ -477,6 +517,7 @@ p {
 @media (max-width: 640px) {
   body {
     padding: 0;
+    font-size: 15px;
   }
 
   .terminal {
@@ -485,9 +526,18 @@ p {
     background: transparent;
   }
 
+  h1 {
+    font-size: 1.6rem;
+    letter-spacing: 0.04em;
+  }
+
+  h2 {
+    font-size: 1.05rem;
+  }
+
   .project-title {
-    font-size: 1.25rem;
-    letter-spacing: 0.1em;
+    font-size: 1.35rem;
+    letter-spacing: 0.12em;
   }
 
   .arc {
