@@ -1,18 +1,115 @@
+@font-face {
+  font-family: "LiquidCrystal";
+  src: url("fonts/LiquidCrystal-Light.otf") format("opentype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "LiquidCrystal";
+  src: url("fonts/LiquidCrystal-LightItalic.otf") format("opentype");
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "LiquidCrystal";
+  src: url("fonts/LiquidCrystal-Normal.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "LiquidCrystal";
+  src: url("fonts/LiquidCrystal-NormalItalic.otf") format("opentype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "LiquidCrystal";
+  src: url("fonts/LiquidCrystal-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "LiquidCrystal";
+  src: url("fonts/LiquidCrystal-BoldItalic.otf") format("opentype");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "LiquidCrystal";
+  src: url("fonts/LiquidCrystal-ExBold.otf") format("opentype");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "LiquidCrystal";
+  src: url("fonts/LiquidCrystal-ExBoldItalic.otf") format("opentype");
+  font-weight: 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "VT323";
+  src: url("fonts/VT323-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   color-scheme: dark;
   --marquee-gap: 24px;
-  --font-body: "IBM Plex Mono", "Space Mono", "Fira Mono", "Cascadia Mono",
-    "Courier New", monospace;
-  --font-display: "VT323", "IBM Plex Mono", "Space Mono", "Fira Mono",
-    "Courier New", monospace;
-  --glow-amber: 0 0 8px rgba(230, 179, 92, 0.22),
-    0 0 18px rgba(230, 179, 92, 0.12);
-  --glow-ivory: 0 0 6px rgba(240, 240, 240, 0.22),
-    0 0 14px rgba(240, 240, 240, 0.08);
-  --glow-depth: 0 0 16px rgba(0, 0, 0, 0.45);
-  --glow-calc: 0 0 2px rgba(255, 233, 170, 0.55),
-    0 0 6px rgba(230, 179, 92, 0.35),
-    0 0 14px rgba(230, 179, 92, 0.22);
+  --font-body: "VT323", "Lucida Console", "Consolas", "SFMono-Regular",
+    "Menlo", "Monaco", "Courier New", monospace;
+  --font-display: "VT323", "Lucida Console", "Consolas", "SFMono-Regular",
+    "Menlo", "Monaco", "Courier New", monospace;
+  --color-bg: #121212;
+  --color-bg-soft: #1f1f1f;
+  --color-bg-mid: #2a2a2a;
+  --color-border: #2b2b2b;
+  --color-border-strong: #2f2f2f;
+  --color-border-muted: #3a3a3a;
+  --color-border-hover: #4a4a4a;
+  --color-border-accent: #6f6f6f;
+  --color-text: #c2c2c2;
+  --color-text-strong: #e3e3e3;
+  --color-text-bright: #ededed;
+  --color-text-soft: #b8b8b8;
+  --color-text-muted: #a6a6a6;
+  --color-text-line: #c0c0c0;
+  --color-text-dim: #8f8f8f;
+  --color-text-weak: #9a9a9a;
+  --color-text-glitch: #a2a2a2;
+  --color-text-arc: #c8c8c8;
+  --color-bar-fill: #7f7f7f;
+  --color-bar-head: #a8a8a8;
+  --audio-gradient-strong: rgba(18, 18, 18, 0.7);
+  --audio-gradient-mid: rgba(18, 18, 18, 0.45);
+  --glow-amber: 0 0 6px rgba(200, 200, 200, 0.12),
+    0 0 10px rgba(160, 160, 160, 0.08);
+  --glow-ivory: 0 0 4px rgba(230, 230, 230, 0.15),
+    0 0 10px rgba(170, 170, 170, 0.08);
+  --glow-depth: 0 0 14px rgba(0, 0, 0, 0.5);
+  --glow-calc: 0 0 1px rgba(220, 220, 220, 0.35),
+    0 0 4px rgba(170, 170, 170, 0.2),
+    0 0 10px rgba(140, 140, 140, 0.16);
+  --glow-glitch: 0 0 6px rgba(200, 200, 200, 0.35);
+  --glow-glitch-soft: 0 0 6px rgba(200, 200, 200, 0.3);
+  --flicker-duration: 10s;
   --scanline: repeating-linear-gradient(180deg,
       rgba(0, 0, 0, 0.35) 0 2px,
       rgba(0, 0, 0, 0) 2px 4px);
@@ -25,8 +122,8 @@ body {
   padding: 32px;
   line-height: 1.65;
   letter-spacing: 0.02em;
-  color: #efe7d2;
-  background: #121212;
+  color: var(--color-text);
+  background: var(--color-bg);
   text-shadow: var(--glow-depth);
 }
 
@@ -52,13 +149,14 @@ body::before {
   box-shadow:
     /*0 0 0 2px #0f0f0f, 0 0 24px rgba(0, 0, 0, 0.6);*/
     none;
+  animation: terminal-flicker var(--flicker-duration) infinite;
 }
 
 h1,
 h2 {
   margin: 0 0 16px 0;
   font-weight: normal;
-  color: #f7f0da;
+  color: var(--color-text-strong);
   margin-left: 5px;
   font-family: var(--font-display);
   text-shadow: var(--glow-calc);
@@ -71,12 +169,12 @@ h1 {
 
 h2 {
   font-size: 1.15rem;
-  color: #e9dfc2;
+  color: var(--color-text-soft);
 }
 
 .project-title {
   font-size: 1.6rem;
-  color: #fff1c9;
+  color: var(--color-text-bright);
   text-transform: uppercase;
   letter-spacing: 0.14em;
   font-weight: bold;
@@ -88,13 +186,13 @@ h2 {
 .arc {
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #efe2c1;
+  color: var(--color-text-arc);
   display: flex;
   align-items: center;
   justify-content: flex-end;
   text-align: right;
   gap: 12px;
-  border-right: 3px solid #e6b35c;
+  border-right: 3px solid var(--color-border-accent);
   padding-right: 10px;
   font-family: var(--font-display);
   text-shadow: var(--glow-calc);
@@ -105,7 +203,7 @@ h2 {
   flex: 1;
   height: 1px;
   background: repeating-linear-gradient(90deg,
-      #3a3a3a 0 8px,
+      var(--color-border-muted) 0 8px,
       transparent 8px 14px);
 }
 
@@ -123,7 +221,7 @@ p {
 .timeline-item summary {
   cursor: pointer;
   font-size: 1.1rem;
-  color: #f3d58f;
+  color: var(--color-text-soft);
   margin: 0 0 8px 0;
   padding-left: 20px;
   display: flex;
@@ -136,9 +234,9 @@ p {
 }
 
 .timeline-item summary .summary-type {
-  color: #d9c08a;
+  color: var(--color-text-weak);
   padding: 0 6px;
-  border: 1px solid #3a3a3a;
+  border: 1px solid var(--color-border-muted);
   border-radius: 2px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -180,11 +278,11 @@ p {
   position: absolute;
   left: 0;
   top: 0;
-  color: #e6b35c;
+  color: var(--color-text-glitch);
   opacity: 0;
   pointer-events: none;
   white-space: nowrap;
-  text-shadow: 0 0 6px rgba(230, 179, 92, 0.4);
+  text-shadow: var(--glow-glitch);
 }
 
 .timeline-item summary .summary-clip.glitch-on::after {
@@ -211,7 +309,7 @@ p {
   pointer-events: none;
   white-space: nowrap;
   text-align: inherit;
-  text-shadow: 0 0 6px rgba(230, 179, 92, 0.35);
+  text-shadow: var(--glow-glitch-soft);
 }
 
 .glitch-target.glitch-on::after {
@@ -220,7 +318,7 @@ p {
 }
 
 .timeline-item summary::marker {
-  color: #e6b35c;
+  color: var(--color-text-dim);
 }
 
 .timeline-item summary::-webkit-details-marker {
@@ -233,21 +331,21 @@ p {
   left: 0;
   top: 50%;
   transform: translateY(-50%);
-  color: #e6b35c;
+  color: var(--color-text-dim);
 }
 
 .timeline-item[open] summary::before {
   content: "⟟";
-  color: #f2c477;
+  color: var(--color-text-strong);
 }
 
 .timeline-item[open] summary {
-  color: #f2c477;
+  color: var(--color-text-strong);
 }
 
 .timeline-item summary:hover,
 .timeline-item summary:focus-visible {
-  color: #f2c477;
+  color: var(--color-text-strong);
 }
 
 .timeline-item .content {
@@ -256,8 +354,8 @@ p {
 
 .video {
   margin: 8px 0 20px 0;
-  border: 1px solid #2b2b2b;
-  background: #121212;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
   padding: 8px;
 }
 
@@ -274,11 +372,11 @@ p {
   align-items: center;
   gap: 12px;
   padding: 10px 12px;
-  border: 1px solid #2b2b2b;
+  border: 1px solid var(--color-border);
   background: linear-gradient(90deg,
-      rgba(18, 18, 18, 0.7) 0%,
-      rgba(18, 18, 18, 0.45) 50%,
-      rgba(18, 18, 18, 0.7) 100%);
+      var(--audio-gradient-strong) 0%,
+      var(--audio-gradient-mid) 50%,
+      var(--audio-gradient-strong) 100%);
   position: relative;
 }
 
@@ -294,9 +392,9 @@ p {
 .audio-toggle {
   width: 32px;
   height: 28px;
-  border: 1px solid #3a3a3a;
-  background: #121212;
-  color: #e6b35c;
+  border: 1px solid var(--color-border-muted);
+  background: var(--color-bg);
+  color: var(--color-text-soft);
   font-family: inherit;
   font-size: 0.95rem;
   line-height: 1;
@@ -327,15 +425,15 @@ p {
 }
 
 .audio-toggle:hover {
-  border-color: #4a4a4a;
-  color: #f2c477;
+  border-color: var(--color-border-hover);
+  color: var(--color-text-strong);
 }
 
 .audio-bar {
   position: relative;
   height: 6px;
-  background: #2a2a2a;
-  border: 1px solid #2f2f2f;
+  background: var(--color-bg-mid);
+  border: 1px solid var(--color-border-strong);
   cursor: pointer;
   overflow: hidden;
 }
@@ -343,7 +441,7 @@ p {
 .audio-bar-fill {
   position: absolute;
   inset: 0;
-  background: #9a9a9a;
+  background: var(--color-bar-fill);
   transform-origin: left;
   transform: scaleX(0);
   opacity: 0.7;
@@ -354,14 +452,14 @@ p {
   top: -3px;
   width: 6px;
   height: 12px;
-  background: #c2c2c2;
-  border: 1px solid #2b2b2b;
+  background: var(--color-bar-head);
+  border: 1px solid var(--color-border);
   transform: translateX(-50%);
 }
 
 .audio-time {
   font-size: 0.85rem;
-  color: #bdbdbd;
+  color: var(--color-text-muted);
   letter-spacing: 0.08em;
   white-space: nowrap;
 }
@@ -371,7 +469,7 @@ p {
 }
 
 .line {
-  color: #d2d2d2;
+  color: var(--color-text-line);
   margin-bottom: 6px;
   display: flex;
   align-items: center;
@@ -388,8 +486,8 @@ p {
   justify-content: center;
   width: 46px;
   height: 16px;
-  border: 1px solid #3a3a3a;
-  color: #e6b35c;
+  border: 1px solid var(--color-border-muted);
+  color: var(--color-text-soft);
   font-size: 0.7rem;
   letter-spacing: 0.08em;
   opacity: 0;
@@ -418,8 +516,14 @@ p {
   opacity: 1;
 }
 
+.type-section.is-loaded .section-icon--loop::before {
+  content: "[>>]";
+  animation: none;
+}
+
 .section-icon--loop::before {
-  animation: decompress-icon 6s steps(1, end) infinite;
+  content: "[>>]";
+  animation: none;
 }
 
 .name-row {
@@ -446,7 +550,7 @@ p {
   justify-content: center;
   width: 18px;
   height: 18px;
-  color: #e6b35c;
+  color: var(--color-text-soft);
   font-size: 0.95rem;
   line-height: 1;
 }
@@ -466,7 +570,7 @@ p {
   text-transform: uppercase;
   letter-spacing: 0.18em;
   font-size: 0.95rem;
-  color: #bdbdbd;
+  color: var(--color-text-muted);
   font-family: var(--font-display);
   text-shadow: var(--glow-calc);
 }
@@ -486,7 +590,7 @@ p {
 }
 
 .prompt {
-  color: #f3d58f;
+  color: var(--color-text-soft);
   margin-right: 8px;
   text-shadow: var(--glow-calc);
 }
@@ -496,14 +600,14 @@ p {
   height: 10px;
   border-radius: 0;
   background: repeating-linear-gradient(90deg,
-      #1f1f1f 0 10px,
-      #2a2a2a 10px 16px);
-  box-shadow: inset 0 0 0 1px #2f2f2f;
+      var(--color-bg-soft) 0 10px,
+      var(--color-bg-mid) 10px 16px);
+  box-shadow: inset 0 0 0 1px var(--color-border-strong);
   opacity: 0.7;
 }
 
 .terminal a {
-  color: #e6b35c;
+  color: var(--color-text-soft);
   text-decoration: underline;
   text-decoration-thickness: 2px;
   text-underline-offset: 3px;
@@ -511,7 +615,7 @@ p {
 
 .terminal a:hover,
 .terminal a:focus-visible {
-  color: #f2c477;
+  color: var(--color-text-strong);
 }
 
 @media (max-width: 640px) {
@@ -542,7 +646,7 @@ p {
 
   .arc {
     gap: 8px;
-    border-right: 2px solid #e6b35c;
+    border-right: 2px solid var(--color-border-accent);
   }
 
   .line {
@@ -639,6 +743,76 @@ p {
   }
 }
 
+@keyframes terminal-flicker {
+
+  0%,
+  98%,
+  100% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+
+  2% {
+    opacity: 0.92;
+    filter: brightness(0.9);
+  }
+
+  3% {
+    opacity: 0.98;
+    filter: brightness(1.02);
+  }
+
+  8% {
+    opacity: 0.9;
+    filter: brightness(0.86);
+  }
+
+  9% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+
+  18% {
+    opacity: 0.94;
+    filter: brightness(0.92);
+  }
+
+  19% {
+    opacity: 0.99;
+    filter: brightness(1);
+  }
+
+  44% {
+    opacity: 0.9;
+    filter: brightness(0.84);
+  }
+
+  45% {
+    opacity: 1;
+    filter: brightness(1.03);
+  }
+
+  62% {
+    opacity: 0.93;
+    filter: brightness(0.9);
+  }
+
+  63% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+
+  81% {
+    opacity: 0.95;
+    filter: brightness(0.92);
+  }
+
+  82% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+}
+
 @keyframes decompress-icon {
   0% {
     content: "[ ]";
@@ -694,6 +868,10 @@ p {
 
   .section-icon::before,
   .name-icon::before {
+    animation: none;
+  }
+
+  .terminal {
     animation: none;
   }
 }
