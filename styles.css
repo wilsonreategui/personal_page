@@ -110,14 +110,19 @@
   --glow-glitch: 0 0 6px rgba(200, 200, 200, 0.35);
   --glow-glitch-soft: 0 0 6px rgba(200, 200, 200, 0.3);
   --flicker-duration: 10s;
+  --base-font-size: 19px;
   --scanline: repeating-linear-gradient(180deg,
       rgba(0, 0, 0, 0.35) 0 2px,
       rgba(0, 0, 0, 0) 2px 4px);
 }
 
+html {
+  font-size: var(--base-font-size);
+}
+
 body {
   font-family: var(--font-body);
-  font-size: 16px;
+  font-size: 1rem;
   margin: 0;
   padding: 32px;
   line-height: 1.65;
@@ -713,9 +718,12 @@ p {
 }
 
 @media (max-width: 640px) {
+  :root {
+    --base-font-size: 17px;
+  }
+
   body {
     padding: 0;
-    font-size: 15px;
   }
 
   .terminal {
