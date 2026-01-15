@@ -947,12 +947,21 @@ p {
 }
 
 .terminal .name-menu__item.is-active {
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 6px;
   color: var(--color-accent-active);
-  text-decoration-color: var(--color-accent-active);
   text-shadow: 0 0 8px currentColor;
+  position: relative;
+}
+
+.terminal .name-menu__item.is-active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  height: 2px;
+  background: currentColor;
+  box-shadow: 0 0 6px currentColor;
+  opacity: 0.9;
 }
 
 .terminal .name-menu__item.lamp-toggle:hover .lamp-icon,
@@ -973,9 +982,16 @@ p {
   color: var(--color-accent-active);
   font-size: 0.75em;
   line-height: 1;
+  box-sizing: border-box;
+  letter-spacing: 0;
   text-shadow: 0 0 8px currentColor;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
   animation: new-flag-pulse 2.6s ease-in-out infinite;
+}
+
+.name-menu .new-flag {
+  margin-left: -6px;
+  text-decoration: none;
 }
 
 .page-section.is-active-page .section-title {
