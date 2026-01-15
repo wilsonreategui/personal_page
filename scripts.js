@@ -519,8 +519,9 @@ const updateMenuConnectors = () => {
   const menuItems = Array.from(
     document.querySelectorAll(".name-menu__item:not(.lamp-toggle)")
   );
+  const menuToggle = document.querySelector(".menu-toggle");
   const svg = document.querySelector(".menu-connector");
-  if (!container || !menuItems.length || !svg) {
+  if (!container || !svg) {
     return;
   }
   const activePage = document.documentElement.dataset.activePage;
@@ -580,7 +581,17 @@ const updateMenuConnectors = () => {
   const activeItems = menuItems.filter((item) =>
     item.classList.contains("is-active")
   );
-  const itemsToDraw = activeItems.length ? activeItems : menuItems;
+  const toggleRect = menuToggle?.getBoundingClientRect();
+  const toggleVisible =
+    !!toggleRect && toggleRect.width > 0 && toggleRect.height > 0;
+  let itemsToDraw = activeItems.length ? activeItems : menuItems;
+  if (toggleVisible && menuToggle) {
+    itemsToDraw = [menuToggle];
+  }
+  if (!itemsToDraw.length) {
+    svg.replaceChildren();
+    return;
+  }
   const paths = [];
   itemsToDraw.forEach((item) => {
     const sourceRect = item.getBoundingClientRect();
@@ -809,10 +820,12 @@ const initMenuToggle = () => {
   const closeMenu = () => {
     root.classList.remove("menu-open");
     toggle.setAttribute("aria-expanded", "false");
+    requestMenuConnectorUpdate();
   };
   toggle.addEventListener("click", () => {
     const isOpen = root.classList.toggle("menu-open");
     toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    requestMenuConnectorUpdate();
   });
   menu.querySelectorAll("a[data-page]").forEach((item) => {
     item.addEventListener("click", closeMenu);
@@ -821,6 +834,7 @@ const initMenuToggle = () => {
     if (window.innerWidth > 640) {
       closeMenu();
     }
+    requestMenuConnectorUpdate();
   });
 };
 
