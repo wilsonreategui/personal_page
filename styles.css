@@ -604,7 +604,7 @@ p {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   margin-bottom: 16px;
   width: 100%;
 }
@@ -615,8 +615,25 @@ p {
   flex: 0 1 auto;
 }
 
-.name-row .lamp-icon {
+.name-menu {
   margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.65rem;
+  font-family: var(--font-display);
+  color: var(--color-text-soft);
+  text-shadow: var(--glow-calc);
+}
+
+.name-menu__item {
+  color: inherit;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .name-icon {
@@ -805,6 +822,11 @@ p {
 
   .name-row {
     gap: 12px;
+  }
+
+  .name-menu {
+    gap: 10px;
+    font-size: 0.6rem;
   }
 
   .name-icon {
