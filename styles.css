@@ -248,8 +248,8 @@ h1 {
 .lamp-icon {
   display: inline-block;
   position: relative;
-  width: 1.3em;
-  height: 1.3em;
+  width: 1.7em;
+  height: 1.7em;
   border: 1px solid currentColor;
   border-radius: 3px;
   color: var(--color-text-bright);
@@ -258,13 +258,24 @@ h1 {
   transition: transform 220ms ease, filter 220ms ease, opacity 220ms ease;
 }
 
+.lamp-glyph {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7em;
+  line-height: 1;
+  text-shadow: 0 0 6px currentColor;
+}
+
 .lamp-icon::before {
   content: "";
   position: absolute;
   left: 50%;
   top: 16%;
-  width: 58%;
-  height: 54%;
+  width: 62%;
+  height: 58%;
   border: 1px solid currentColor;
   border-radius: 50% 50% 45% 45% / 55% 55% 45% 45%;
   transform: translateX(-50%);
@@ -276,8 +287,8 @@ h1 {
   position: absolute;
   left: 50%;
   bottom: 14%;
-  width: 38%;
-  height: 12%;
+  width: 42%;
+  height: 14%;
   border: 1px solid currentColor;
   border-radius: 2px;
   transform: translateX(-50%);
@@ -676,7 +687,7 @@ p {
 
 .name-row {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: flex-start;
   flex-wrap: wrap;
   margin-bottom: 16px;
@@ -692,7 +703,7 @@ p {
 .name-menu {
   margin-left: auto;
   display: inline-flex;
-  align-items: center;
+  align-items: baseline;
   gap: 14px;
   text-transform: uppercase;
   letter-spacing: 0.14em;
@@ -700,6 +711,37 @@ p {
   font-family: var(--font-display);
   color: var(--color-text-soft);
   text-shadow: var(--glow-calc);
+}
+
+.name-menu__items {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 14px;
+}
+
+.menu-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 4px;
+  width: 32px;
+  height: 28px;
+  padding: 0;
+  background: none;
+  border: 1px solid var(--color-border-muted);
+  border-radius: 2.5px;
+  color: inherit;
+  cursor: pointer;
+  align-self: baseline;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.22);
+}
+
+.menu-toggle span {
+  display: block;
+  width: 16px;
+  height: 2px;
+  background: currentColor;
 }
 
 .name-menu__item {
@@ -713,6 +755,11 @@ p {
   padding: 0;
   cursor: pointer;
   font: inherit;
+}
+
+.lamp-toggle {
+  align-items: center;
+  align-self: baseline;
 }
 
 .name-menu__item:focus-visible {
@@ -963,11 +1010,55 @@ p {
 
   .name-row {
     gap: 12px;
+    align-items: center;
   }
 
   .name-menu {
     gap: 10px;
     font-size: 0.6rem;
+    align-items: center;
+    align-self: center;
+  }
+
+  .menu-toggle {
+    display: inline-flex;
+    width: 2em;
+    height: 2em;
+    align-self: center;
+  }
+
+  .menu-toggle span {
+    width: 14px;
+  }
+
+  .lamp-toggle {
+    align-self: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2em;
+    height: 2em;
+  }
+
+  .lamp-icon {
+    width: 1.9em;
+    height: 1.9em;
+  }
+
+  .name-menu__items {
+    display: none;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    margin-top: 8px;
+    padding: 8px 10px;
+    border: 1px solid var(--color-border-muted);
+    background: var(--color-bg-soft);
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.25);
+  }
+
+  .menu-open .name-menu__items {
+    display: flex;
   }
 
   .name-icon {

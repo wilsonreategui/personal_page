@@ -675,6 +675,10 @@ const initThemeToggle = () => {
   const syncState = () => {
     const isLight = root.classList.contains("theme-light");
     toggle.setAttribute("aria-pressed", isLight ? "true" : "false");
+    const glyph = toggle.querySelector(".lamp-glyph");
+    if (glyph) {
+      glyph.textContent = isLight ? "O" : "-";
+    }
   };
   toggle.addEventListener("click", () => {
     root.classList.add("theme-transition");
@@ -795,6 +799,31 @@ const initMenuPageSwitch = () => {
   activateFromHash();
 };
 
+const initMenuToggle = () => {
+  const toggle = document.querySelector(".menu-toggle");
+  const menu = document.querySelector(".name-menu__items");
+  if (!toggle || !menu) {
+    return;
+  }
+  const root = document.body;
+  const closeMenu = () => {
+    root.classList.remove("menu-open");
+    toggle.setAttribute("aria-expanded", "false");
+  };
+  toggle.addEventListener("click", () => {
+    const isOpen = root.classList.toggle("menu-open");
+    toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  });
+  menu.querySelectorAll("a[data-page]").forEach((item) => {
+    item.addEventListener("click", closeMenu);
+  });
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 640) {
+      closeMenu();
+    }
+  });
+};
+
 const startVisuals = () => {
   registerTitleGlitches();
   const typewriterDone = startTypewriter();
@@ -822,6 +851,7 @@ const startVisuals = () => {
 initLampIndicator();
 initThemeToggle();
 initMenuPageSwitch();
+initMenuToggle();
 initMenuConnectorResizeObserver();
 if (document.fonts && document.fonts.ready) {
   document.fonts.ready.then(() => {
