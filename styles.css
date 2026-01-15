@@ -148,6 +148,7 @@ body::before {
     /*#1a1a1a;*/
     transparent;
   padding: 28px;
+  position: relative;
   border:
     /*1px solid #2b2b2b;*/
     none;
@@ -155,6 +156,23 @@ body::before {
     /*0 0 0 2px #0f0f0f, 0 0 24px rgba(0, 0, 0, 0.6);*/
     none;
   animation: terminal-flicker var(--flicker-duration) infinite;
+}
+
+.menu-connector {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+  opacity: 0.7;
+}
+
+.menu-connector path {
+  fill: none;
+  stroke: var(--color-border-muted);
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
 }
 
 h1,
@@ -775,6 +793,16 @@ p {
 .terminal a:hover,
 .terminal a:focus-visible {
   color: var(--color-text-strong);
+}
+
+.terminal .name-menu__item {
+  text-decoration: none;
+}
+
+.terminal .name-menu__item.is-active {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
 }
 
 @media (max-width: 640px) {

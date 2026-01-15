@@ -509,6 +509,103 @@ const requestMarqueeUpdate = () => {
   });
 };
 
+let connectorRaf = null;
+const updateMenuConnectors = () => {
+  const container = document.querySelector(".terminal");
+  const menuItems = Array.from(
+    document.querySelectorAll(".name-menu__item:not(.lamp-icon)")
+  );
+  const target = document.querySelector(
+    "[data-connector-target='archivos']"
+  );
+  const svg = document.querySelector(".menu-connector");
+  if (!container || !menuItems.length || !target || !svg) {
+    return;
+  }
+
+  const containerRect = container.getBoundingClientRect();
+  const targetTitle =
+    target.querySelector(".section-title") || target;
+  const targetRect = targetTitle.getBoundingClientRect();
+  if (!containerRect.width || !targetRect.width) {
+    svg.replaceChildren();
+    return;
+  }
+
+  const round = (value) => Math.round(value);
+  const endX = round(
+    targetRect.left + targetRect.width / 2 - containerRect.left
+  );
+  const endY = round(
+    targetRect.top + targetRect.height / 2 - containerRect.top - 14
+  );
+
+  const activeItems = menuItems.filter((item) =>
+    item.classList.contains("is-active")
+  );
+  const itemsToDraw = activeItems.length ? activeItems : menuItems;
+  const paths = [];
+  itemsToDraw.forEach((item) => {
+    const sourceRect = item.getBoundingClientRect();
+    if (!sourceRect.width || !sourceRect.height) {
+      return;
+    }
+    const startX = round(
+      sourceRect.left + sourceRect.width / 2 - containerRect.left
+    );
+    const startY = round(sourceRect.bottom - containerRect.top + 6);
+    const deltaY = endY - startY;
+    const firstDrop = Math.max(12, Math.min(34, Math.abs(deltaY) * 0.4));
+    const midY = round(startY + Math.sign(deltaY || 1) * firstDrop);
+
+    paths.push(`M ${startX} ${startY} V ${midY} H ${endX} V ${endY}`);
+  });
+
+  svg.setAttribute(
+    "viewBox",
+    `0 0 ${Math.round(containerRect.width)} ${Math.round(containerRect.height)}`
+  );
+  svg.setAttribute("width", Math.round(containerRect.width));
+  svg.setAttribute("height", Math.round(containerRect.height));
+
+  svg.replaceChildren();
+  paths.forEach((pathData) => {
+    const path = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "path"
+    );
+    path.setAttribute("d", pathData);
+    svg.appendChild(path);
+  });
+};
+
+const requestMenuConnectorUpdate = () => {
+  if (connectorRaf !== null) {
+    return;
+  }
+  connectorRaf = requestAnimationFrame(() => {
+    connectorRaf = null;
+    updateMenuConnectors();
+  });
+};
+
+const initMenuConnectorResizeObserver = () => {
+  const container = document.querySelector(".terminal");
+  if (!container) {
+    return;
+  }
+  if (window.ResizeObserver) {
+    const observer = new ResizeObserver(() => {
+      requestMenuConnectorUpdate();
+    });
+    observer.observe(container);
+  } else {
+    document.querySelectorAll("details").forEach((detail) => {
+      detail.addEventListener("toggle", requestMenuConnectorUpdate);
+    });
+  }
+};
+
 const scheduleMarqueeUpdate = () => {
   updateMarquee();
   requestMarqueeUpdate();
@@ -535,14 +632,21 @@ const initLampIndicator = () => {
 const startVisuals = () => {
   registerTitleGlitches();
   const typewriterDone = startTypewriter();
+  const finalizeVisuals = () => {
+    scheduleMarqueeUpdate();
+    requestMenuConnectorUpdate();
+  };
   if (typewriterDone) {
     typewriterDone.then(() => {
-      scheduleMarqueeUpdate();
+      finalizeVisuals();
     });
   } else {
-    scheduleMarqueeUpdate();
+    finalizeVisuals();
   }
-  window.addEventListener("resize", requestMarqueeUpdate);
+  window.addEventListener("resize", () => {
+    requestMarqueeUpdate();
+    requestMenuConnectorUpdate();
+  });
   setTimeout(() => {
     glitchEnabled = true;
     scheduleRandomGlitch();
@@ -550,13 +654,16 @@ const startVisuals = () => {
 };
 
 initLampIndicator();
+initMenuConnectorResizeObserver();
 if (document.fonts && document.fonts.ready) {
   document.fonts.ready.then(() => {
     startVisuals();
     requestMarqueeUpdate();
+    requestMenuConnectorUpdate();
   });
 } else {
   startVisuals();
+  requestMenuConnectorUpdate();
 }
 
 const formatTime = (value) => {
