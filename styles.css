@@ -522,6 +522,30 @@ p {
   border: 0;
 }
 
+.media-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin: 12px 0 6px;
+}
+
+.media-gallery__item {
+  margin: 0;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-soft);
+  box-shadow: inset 0 0 0 1px var(--color-border-strong);
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.media-gallery__item img,
+.media-gallery__item video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
 .audio-player {
   display: grid;
   grid-template-columns: auto 1fr auto;
