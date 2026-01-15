@@ -515,23 +515,31 @@ const scheduleMarqueeUpdate = () => {
   setTimeout(updateMarquee, 150);
 };
 
-registerTitleGlitches();
-const typewriterDone = startTypewriter();
-if (typewriterDone) {
-  typewriterDone.then(() => {
+const startVisuals = () => {
+  registerTitleGlitches();
+  const typewriterDone = startTypewriter();
+  if (typewriterDone) {
+    typewriterDone.then(() => {
+      scheduleMarqueeUpdate();
+    });
+  } else {
     scheduleMarqueeUpdate();
+  }
+  window.addEventListener("resize", requestMarqueeUpdate);
+  setTimeout(() => {
+    glitchEnabled = true;
+    scheduleRandomGlitch();
+  }, GLITCH_INITIAL_DELAY);
+};
+
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(() => {
+    startVisuals();
+    requestMarqueeUpdate();
   });
 } else {
-  scheduleMarqueeUpdate();
+  startVisuals();
 }
-window.addEventListener("resize", requestMarqueeUpdate);
-if (document.fonts && document.fonts.ready) {
-  document.fonts.ready.then(requestMarqueeUpdate);
-}
-setTimeout(() => {
-  glitchEnabled = true;
-  scheduleRandomGlitch();
-}, GLITCH_INITIAL_DELAY);
 
 const formatTime = (value) => {
   if (!Number.isFinite(value)) {
