@@ -515,6 +515,23 @@ const scheduleMarqueeUpdate = () => {
   setTimeout(updateMarquee, 150);
 };
 
+const initLampIndicator = () => {
+  const lamp = document.querySelector(".lamp-icon");
+  if (!lamp) {
+    return;
+  }
+  const turnOn = () => {
+    lamp.classList.remove("is-loading");
+    lamp.classList.add("is-on");
+  };
+  lamp.classList.add("is-loading");
+  if (document.readyState === "complete") {
+    turnOn();
+    return;
+  }
+  window.addEventListener("load", turnOn, { once: true });
+};
+
 const startVisuals = () => {
   registerTitleGlitches();
   const typewriterDone = startTypewriter();
@@ -532,6 +549,7 @@ const startVisuals = () => {
   }, GLITCH_INITIAL_DELAY);
 };
 
+initLampIndicator();
 if (document.fonts && document.fonts.ready) {
   document.fonts.ready.then(() => {
     startVisuals();
