@@ -513,7 +513,7 @@ let connectorRaf = null;
 const updateMenuConnectors = () => {
   const container = document.querySelector(".terminal");
   const menuItems = Array.from(
-    document.querySelectorAll(".name-menu__item:not(.lamp-icon)")
+    document.querySelectorAll(".name-menu__item:not(.lamp-toggle)")
   );
   const target = document.querySelector(
     "[data-connector-target='archivos']"
@@ -629,6 +629,29 @@ const initLampIndicator = () => {
   window.addEventListener("load", turnOn, { once: true });
 };
 
+const initThemeToggle = () => {
+  const toggle = document.querySelector(".lamp-toggle");
+  if (!toggle) {
+    return;
+  }
+  const root = document.documentElement;
+  const syncState = () => {
+    const isLight = root.classList.contains("theme-light");
+    toggle.setAttribute("aria-pressed", isLight ? "true" : "false");
+  };
+  toggle.addEventListener("click", () => {
+    root.classList.add("theme-transition");
+    requestAnimationFrame(() => {
+      root.classList.toggle("theme-light");
+      syncState();
+      window.setTimeout(() => {
+        root.classList.remove("theme-transition");
+      }, 360);
+    });
+  });
+  syncState();
+};
+
 const startVisuals = () => {
   registerTitleGlitches();
   const typewriterDone = startTypewriter();
@@ -654,6 +677,7 @@ const startVisuals = () => {
 };
 
 initLampIndicator();
+initThemeToggle();
 initMenuConnectorResizeObserver();
 if (document.fonts && document.fonts.ready) {
   document.fonts.ready.then(() => {
