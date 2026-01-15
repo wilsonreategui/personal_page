@@ -97,7 +97,7 @@
   --color-text-arc: #c8c8c8;
   --color-bar-fill: #7f7f7f;
   --color-bar-head: #a8a8a8;
-  --color-accent-active: #a6f0ff;
+  --color-accent-active: #ffd1a6;
   --audio-gradient-strong: rgba(18, 18, 18, 0.7);
   --audio-gradient-mid: rgba(18, 18, 18, 0.45);
   --glow-amber: 0 0 6px rgba(200, 200, 200, 0.12),
@@ -139,7 +139,7 @@ html.theme-light {
   --color-text-arc: #2f2f2f;
   --color-bar-fill: #6a6a6a;
   --color-bar-head: #2a2a2a;
-  --color-accent-active: #297985;
+  --color-accent-active: #9a5b2e;
   --audio-gradient-strong: rgba(242, 242, 242, 0.75);
   --audio-gradient-mid: rgba(242, 242, 242, 0.5);
   --glow-amber: 0 0 6px rgba(60, 60, 60, 0.12),
