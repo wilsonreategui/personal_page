@@ -1121,6 +1121,14 @@ p {
     display: flex;
   }
 
+  .menu-open .name-menu__item {
+    align-items: center;
+  }
+
+  .menu-open .name-menu .new-flag {
+    align-self: center;
+  }
+
   .name-icon {
     width: 16px;
     height: 16px;
