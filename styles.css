@@ -172,6 +172,44 @@ h1 {
   letter-spacing: 0.05em;
 }
 
+.lamp-icon {
+  display: inline-block;
+  position: relative;
+  width: 1.3em;
+  height: 1.3em;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  color: var(--color-text-bright);
+  opacity: 0.9;
+  box-sizing: border-box;
+}
+
+.lamp-icon::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 16%;
+  width: 58%;
+  height: 54%;
+  border: 1px solid currentColor;
+  border-radius: 50% 50% 45% 45% / 55% 55% 45% 45%;
+  transform: translateX(-50%);
+  box-sizing: border-box;
+}
+
+.lamp-icon::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 14%;
+  width: 38%;
+  height: 12%;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  transform: translateX(-50%);
+  box-sizing: border-box;
+}
+
 h2 {
   font-size: 1.15rem;
   color: var(--color-text-soft);
@@ -365,7 +403,7 @@ p {
   border-radius: 2px;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 10ms linear, border-color 40ms linear;
+  transition: opacity 0ms linear, border-color 40ms linear;
   z-index: -1;
 }
 
@@ -529,7 +567,7 @@ p {
   justify-content: center;
   width: 46px;
   height: 16px;
-  border: 1px solid var(--color-border-muted);
+  border: none;
   color: var(--color-text-soft);
   font-size: 0.7rem;
   letter-spacing: 0.08em;
@@ -566,8 +604,8 @@ p {
 .name-row {
   display: flex;
   align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
   margin-bottom: 16px;
   width: 100%;
 }
@@ -575,10 +613,11 @@ p {
 .name-row h1 {
   margin: 0;
   margin-left: 5px;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
   flex: 0 1 auto;
+}
+
+.name-row .lamp-icon {
+  margin-left: auto;
 }
 
 .name-icon {
