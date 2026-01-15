@@ -97,6 +97,7 @@
   --color-text-arc: #c8c8c8;
   --color-bar-fill: #7f7f7f;
   --color-bar-head: #a8a8a8;
+  --color-accent-active: #d8f6ff;
   --audio-gradient-strong: rgba(18, 18, 18, 0.7);
   --audio-gradient-mid: rgba(18, 18, 18, 0.45);
   --glow-amber: 0 0 6px rgba(200, 200, 200, 0.12),
@@ -138,6 +139,7 @@ html.theme-light {
   --color-text-arc: #2f2f2f;
   --color-bar-fill: #6a6a6a;
   --color-bar-head: #2a2a2a;
+  --color-accent-active: #1d4b53;
   --audio-gradient-strong: rgba(242, 242, 242, 0.75);
   --audio-gradient-mid: rgba(242, 242, 242, 0.5);
   --glow-amber: 0 0 6px rgba(60, 60, 60, 0.12),
@@ -218,11 +220,12 @@ body::before {
   pointer-events: none;
   overflow: visible;
   opacity: 0.7;
+  --connector-stroke: var(--color-border-muted);
 }
 
 .menu-connector path {
   fill: none;
-  stroke: var(--color-border-muted);
+  stroke: var(--connector-stroke);
   stroke-width: 1px;
   shape-rendering: crispEdges;
 }
@@ -252,6 +255,7 @@ h1 {
   color: var(--color-text-bright);
   opacity: 0.9;
   box-sizing: border-box;
+  transition: transform 220ms ease, filter 220ms ease, opacity 220ms ease;
 }
 
 .lamp-icon::before {
@@ -865,7 +869,52 @@ p {
   text-decoration: underline;
   text-decoration-thickness: 2px;
   text-underline-offset: 6px;
+  color: var(--color-accent-active);
+  text-decoration-color: var(--color-accent-active);
+  text-shadow: 0 0 8px currentColor;
 }
+
+.terminal .name-menu__item.lamp-toggle:hover .lamp-icon,
+.terminal .name-menu__item.lamp-toggle:focus-visible .lamp-icon {
+  transform: scale(1.08);
+  filter: drop-shadow(0 0 6px currentColor);
+}
+
+.new-flag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.1em;
+  height: 1.1em;
+  margin-left: 10px;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  color: var(--color-accent-active);
+  font-size: 0.75em;
+  line-height: 1;
+  text-shadow: 0 0 8px currentColor;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
+  animation: new-flag-pulse 2.6s ease-in-out infinite;
+}
+
+.page-section.is-active-page .section-title {
+  color: var(--color-accent-active);
+  text-shadow: 0 0 8px currentColor;
+}
+
+@keyframes new-flag-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    filter: drop-shadow(0 0 2px currentColor);
+  }
+  55% {
+    opacity: 0.45;
+    filter: drop-shadow(0 0 1px currentColor);
+  }
+}
+
+
 
 @media (max-width: 640px) {
   :root {

@@ -153,19 +153,22 @@ const collectTypewriterTargets = (items) =>
     .filter((item) => item.type === "reveal")
     .map((item) => item.element);
 
-const collectTypewriterSections = () => {
+const collectTypewriterSections = (scope = document) => {
   const sections = Array.from(
-    document.querySelectorAll("[data-typewriter-section]")
+    scope.querySelectorAll("[data-typewriter-section]")
   );
   if (sections.length) {
     return sections;
   }
-  const root = document.querySelector(".terminal");
-  return root ? [root] : [];
+  if (scope === document) {
+    const root = document.querySelector(".terminal");
+    return root ? [root] : [];
+  }
+  return [];
 };
 
-const startTypewriter = () => {
-  const sections = collectTypewriterSections();
+const startTypewriter = (scope = document) => {
+  const sections = collectTypewriterSections(scope);
   if (!sections.length) {
     return null;
   }
@@ -510,16 +513,30 @@ const requestMarqueeUpdate = () => {
 };
 
 let connectorRaf = null;
+let lastConnectorTarget = null;
 const updateMenuConnectors = () => {
   const container = document.querySelector(".terminal");
   const menuItems = Array.from(
     document.querySelectorAll(".name-menu__item:not(.lamp-toggle)")
   );
-  const target = document.querySelector(
-    "[data-connector-target='archivos']"
-  );
   const svg = document.querySelector(".menu-connector");
-  if (!container || !menuItems.length || !target || !svg) {
+  if (!container || !menuItems.length || !svg) {
+    return;
+  }
+  const activePage = document.documentElement.dataset.activePage;
+  const pageContainer = document.querySelector("[data-page-container]");
+  const scope = pageContainer || container;
+  let target = null;
+  if (activePage) {
+    target = scope.querySelector(
+      `[data-connector-target='${activePage}']`
+    );
+  }
+  if (!target) {
+    target = scope.querySelector("[data-connector-target]");
+  }
+  if (!target) {
+    svg.replaceChildren();
     return;
   }
 
@@ -527,18 +544,38 @@ const updateMenuConnectors = () => {
   const targetTitle =
     target.querySelector(".section-title") || target;
   const targetRect = targetTitle.getBoundingClientRect();
-  if (!containerRect.width || !targetRect.width) {
+  if (!containerRect.width) {
     svg.replaceChildren();
     return;
   }
 
   const round = (value) => Math.round(value);
-  const endX = round(
-    targetRect.left + targetRect.width / 2 - containerRect.left
-  );
-  const endY = round(
-    targetRect.top + targetRect.height / 2 - containerRect.top - 14
-  );
+  let endX;
+  let endY;
+  const targetKey =
+    target.getAttribute("data-connector-target") || activePage || "";
+  if (!targetRect.width || !targetRect.height) {
+    if (!lastConnectorTarget || lastConnectorTarget.page !== targetKey) {
+      svg.replaceChildren();
+      return;
+    }
+    endX = Math.min(
+      lastConnectorTarget.endX,
+      Math.round(containerRect.width)
+    );
+    endY = Math.min(
+      lastConnectorTarget.endY,
+      Math.round(containerRect.height)
+    );
+  } else {
+    endX = round(
+      targetRect.left + targetRect.width / 2 - containerRect.left
+    );
+    endY = round(
+      targetRect.top + targetRect.height / 2 - containerRect.top - 14
+    );
+    lastConnectorTarget = { endX, endY, page: targetKey };
+  }
 
   const activeItems = menuItems.filter((item) =>
     item.classList.contains("is-active")
@@ -652,6 +689,112 @@ const initThemeToggle = () => {
   syncState();
 };
 
+let currentPage = null;
+let pageLoadToken = 0;
+
+const loadPageContent = async (page) => {
+  const container = document.querySelector("[data-page-container]");
+  if (!container || !page) {
+    return;
+  }
+  if (page === currentPage && container.childNodes.length) {
+    requestMenuConnectorUpdate();
+    return;
+  }
+  const loadToken = (pageLoadToken += 1);
+  try {
+    const response = await fetch(`pages/${page}.html`, {
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      throw new Error(`No se pudo cargar ${page}: ${response.status}`);
+    }
+    const html = await response.text();
+    if (loadToken !== pageLoadToken) {
+      return;
+    }
+    if (document.fonts && document.fonts.ready) {
+      await document.fonts.ready;
+    }
+    if (loadToken !== pageLoadToken) {
+      return;
+    }
+    const template = document.createElement("template");
+    template.innerHTML = html.trim();
+    container.replaceChildren(template.content);
+    container.querySelectorAll(".page-section").forEach((section) => {
+      const isActive = section.dataset.page === page;
+      section.classList.toggle("is-active-page", isActive);
+    });
+    currentPage = page;
+    registerTitleGlitches();
+    const typewriterDone = startTypewriter(container);
+    if (typewriterDone) {
+      typewriterDone.then(() => {
+        scheduleMarqueeUpdate();
+        requestMenuConnectorUpdate();
+      });
+    } else {
+      scheduleMarqueeUpdate();
+      requestMenuConnectorUpdate();
+    }
+    initAudioPlayers();
+  } catch (error) {
+    console.error(error);
+    if (loadToken !== pageLoadToken) {
+      return;
+    }
+    container.replaceChildren();
+  }
+};
+
+const initMenuPageSwitch = () => {
+  const items = Array.from(
+    document.querySelectorAll(".name-menu__item[data-page]")
+  );
+  if (!items.length) {
+    return;
+  }
+  const root = document.documentElement;
+  const setActive = (item) => {
+    items.forEach((entry) => {
+      entry.classList.toggle("is-active", entry === item);
+    });
+    root.dataset.activePage = item.dataset.page || "";
+    loadPageContent(root.dataset.activePage);
+    requestMenuConnectorUpdate();
+  };
+  const activateFromHash = () => {
+    const hash = decodeURIComponent(window.location.hash || "");
+    const match = items.find(
+      (entry) => entry.getAttribute("href") === hash
+    );
+    if (match) {
+      setActive(match);
+      return;
+    }
+    const current =
+      items.find((entry) => entry.classList.contains("is-active")) ||
+      items[0];
+    setActive(current);
+  };
+  items.forEach((item) => {
+    item.addEventListener("click", (event) => {
+      const href = item.getAttribute("href");
+      if (href) {
+        event.preventDefault();
+        if (window.location.hash !== href) {
+          window.location.hash = href;
+          return;
+        }
+      }
+      setActive(item);
+    });
+  });
+  window.addEventListener("hashchange", activateFromHash);
+  activateFromHash();
+};
+
 const startVisuals = () => {
   registerTitleGlitches();
   const typewriterDone = startTypewriter();
@@ -678,6 +821,7 @@ const startVisuals = () => {
 
 initLampIndicator();
 initThemeToggle();
+initMenuPageSwitch();
 initMenuConnectorResizeObserver();
 if (document.fonts && document.fonts.ready) {
   document.fonts.ready.then(() => {
@@ -701,6 +845,10 @@ const formatTime = (value) => {
 
 const initAudioPlayers = () => {
   document.querySelectorAll(".audio-player").forEach((player) => {
+    if (player.dataset.audioReady === "true") {
+      return;
+    }
+    player.dataset.audioReady = "true";
     const audio = player.querySelector(".audio-element");
     const toggle = player.querySelector(".audio-toggle");
     const bar = player.querySelector(".audio-bar");
