@@ -703,7 +703,7 @@ p {
 .name-menu {
   margin-left: auto;
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
   gap: 14px;
   text-transform: uppercase;
   letter-spacing: 0.14em;
@@ -715,7 +715,7 @@ p {
 
 .name-menu__items {
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
   gap: 14px;
 }
 
@@ -733,7 +733,7 @@ p {
   border-radius: 2.5px;
   color: inherit;
   cursor: pointer;
-  align-self: baseline;
+  align-self: center;
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.22);
 }
 
@@ -759,7 +759,7 @@ p {
 
 .lamp-toggle {
   align-items: center;
-  align-self: baseline;
+  align-self: center;
 }
 
 .name-menu__item:focus-visible {
