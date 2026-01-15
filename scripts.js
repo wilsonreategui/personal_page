@@ -91,41 +91,67 @@ const prepareMarqueeText = (text) => {
   text.dataset.prepared = "true";
 };
 
-const collectTypewriterNodes = (root) => {
-  const nodes = [];
+const collectTypewriterItems = (root) => {
+  const items = [];
   const walker = document.createTreeWalker(
     root,
-    NodeFilter.SHOW_TEXT,
+    NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
     {
       acceptNode: (node) => {
-        if (!node.nodeValue || !node.nodeValue.trim()) {
-          return NodeFilter.FILTER_REJECT;
-        }
-        const parent = node.parentElement;
-        if (!parent) {
-          return NodeFilter.FILTER_REJECT;
-        }
-        const closedDetails = parent.closest("details:not([open])");
-        if (closedDetails && !parent.closest("summary")) {
-          return NodeFilter.FILTER_REJECT;
+        if (node.nodeType === Node.TEXT_NODE) {
+          if (!node.nodeValue || !node.nodeValue.trim()) {
+            return NodeFilter.FILTER_REJECT;
+          }
+          const parent = node.parentElement;
+          if (!parent) {
+            return NodeFilter.FILTER_REJECT;
+          }
+          const closedDetails = parent.closest("details:not([open])");
+          if (closedDetails && !parent.closest("summary")) {
+            return NodeFilter.FILTER_REJECT;
+          }
+          const hiddenParent = parent.closest("[aria-hidden='true']");
+          const revealParent = parent.closest("[data-typewriter-show]");
+          if (
+            hiddenParent &&
+            !revealParent
+          ) {
+            return NodeFilter.FILTER_REJECT;
+          }
+          if (parent.closest("script, style, noscript")) {
+            return NodeFilter.FILTER_REJECT;
+          }
+          return NodeFilter.FILTER_ACCEPT;
         }
         if (
-          parent.closest(
-            "script, style, noscript, .audio-player, [aria-hidden='true']"
-          )
+          node.nodeType === Node.ELEMENT_NODE &&
+          node.hasAttribute("data-typewriter-show")
         ) {
-          return NodeFilter.FILTER_REJECT;
+          const closedDetails = node.closest("details:not([open])");
+          if (closedDetails && !node.closest("summary")) {
+            return NodeFilter.FILTER_REJECT;
+          }
+          return NodeFilter.FILTER_ACCEPT;
         }
-        return NodeFilter.FILTER_ACCEPT;
+        return NodeFilter.FILTER_SKIP;
       },
     }
   );
   while (walker.nextNode()) {
     const node = walker.currentNode;
-    nodes.push({ node, text: node.nodeValue });
+    if (node.nodeType === Node.TEXT_NODE) {
+      items.push({ type: "text", node, text: node.nodeValue });
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      items.push({ type: "reveal", element: node });
+    }
   }
-  return nodes;
+  return items;
 };
+
+const collectTypewriterTargets = (items) =>
+  items
+    .filter((item) => item.type === "reveal")
+    .map((item) => item.element);
 
 const collectTypewriterSections = () => {
   const sections = Array.from(
@@ -158,12 +184,34 @@ const startTypewriter = () => {
     prepareMarqueeText(text);
   });
 
+  document.documentElement.classList.add("typewriter-ready");
   const sectionQueue = sections
-    .map((section) => ({
-      element: section,
-      nodes: collectTypewriterNodes(section),
-    }))
-    .filter((section) => section.nodes.length);
+    .map((section) => {
+      const items = collectTypewriterItems(section);
+      if (!items.length) {
+        return null;
+      }
+      const textItems = items.filter((item) => item.type === "text");
+      const targets = collectTypewriterTargets(items);
+      targets.forEach((target) => {
+        target.classList.add("typewriter-hidden");
+      });
+      textItems.forEach((item) => {
+        item.node.nodeValue = "";
+      });
+      const totalChars = textItems.reduce(
+        (sum, item) => sum + item.text.length,
+        0
+      );
+      return {
+        element: section,
+        items,
+        textItems,
+        targets,
+        totalChars,
+      };
+    })
+    .filter(Boolean);
   if (!sectionQueue.length) {
     return null;
   }
@@ -171,29 +219,23 @@ const startTypewriter = () => {
   sections.forEach((section) => {
     section.classList.remove("is-typing", "is-loaded");
   });
-  sectionQueue.forEach((section) => {
-    section.nodes.forEach((item) => {
-      item.node.nodeValue = "";
-    });
-  });
-
   const getDelayRange = (totalChars) => {
-    const targetDurationMs = 3800;
+    const targetDurationMs = 2200;
     const baseDelay = Math.min(
       10,
       Math.max(2, Math.round(targetDurationMs / Math.max(totalChars, 1)))
     );
-    const minDelay = Math.max(1, Math.round(baseDelay * 0.35));
-    const maxDelay = Math.max(minDelay + 2, Math.round(baseDelay * 1.4));
+    const minDelay = Math.max(1, Math.round(baseDelay * 0.3));
+    const maxDelay = Math.max(minDelay + 1, Math.round(baseDelay * 1.2));
     return { minDelay, maxDelay };
   };
   const heavyPunctuation = new Set([".", "!", "?"]);
   const mediumPunctuation = new Set([",", ";", ":"]);
   const whitespaceChars = new Set([" ", "\n", "\t"]);
-  const sectionPauseMs = 200;
+  const sectionPauseMs = 120;
 
   let sectionIndex = 0;
-  let nodeIndex = 0;
+  let itemIndex = 0;
   let charIndex = 0;
   let minDelay = 0;
   let maxDelay = 0;
@@ -227,8 +269,11 @@ const startTypewriter = () => {
 
   const completeAll = () => {
     sectionQueue.forEach((section) => {
-      section.nodes.forEach((item) => {
+      section.textItems.forEach((item) => {
         item.node.nodeValue = item.text;
+      });
+      section.targets.forEach((target) => {
+        target.classList.remove("typewriter-hidden");
       });
       section.element.classList.remove("is-typing");
       section.element.classList.add("is-loaded");
@@ -249,14 +294,10 @@ const startTypewriter = () => {
     const section = sectionQueue[sectionIndex];
     section.element.classList.remove("is-loaded");
     section.element.classList.add("is-typing");
-    const totalChars = section.nodes.reduce(
-      (sum, item) => sum + item.text.length,
-      0
-    );
-    const delayRange = getDelayRange(totalChars);
+    const delayRange = getDelayRange(section.totalChars);
     minDelay = delayRange.minDelay;
     maxDelay = delayRange.maxDelay;
-    nodeIndex = 0;
+    itemIndex = 0;
     charIndex = 0;
     timerId = window.setTimeout(nextChar, 120);
   };
@@ -282,31 +323,32 @@ const startTypewriter = () => {
       finishTyping();
       return;
     }
-    if (nodeIndex >= section.nodes.length) {
+    let item = section.items[itemIndex];
+    while (item && item.type === "reveal") {
+      item.element.classList.remove("typewriter-hidden");
+      itemIndex += 1;
+      item = section.items[itemIndex];
+    }
+    if (!item) {
       finishSection();
       return;
     }
-    const current = section.nodes[nodeIndex];
-    const char = current.text.charAt(charIndex);
-    current.node.nodeValue += char;
+    const char = item.text.charAt(charIndex);
+    item.node.nodeValue += char;
     charIndex += 1;
-    if (charIndex >= current.text.length) {
-      nodeIndex += 1;
+    if (charIndex >= item.text.length) {
+      itemIndex += 1;
       charIndex = 0;
-    }
-    if (nodeIndex >= section.nodes.length) {
-      finishSection();
-      return;
     }
     let delay = minDelay + Math.random() * (maxDelay - minDelay);
     if (whitespaceChars.has(char)) {
       delay = Math.max(2, minDelay * 0.3);
     } else if (heavyPunctuation.has(char)) {
-      delay += 45 + Math.random() * 70;
+      delay += 20 + Math.random() * 40;
     } else if (mediumPunctuation.has(char)) {
-      delay += 25 + Math.random() * 40;
-    } else if (Math.random() < 0.015) {
-      delay += 35 + Math.random() * 50;
+      delay += 12 + Math.random() * 22;
+    } else if (Math.random() < 0.01) {
+      delay += 20 + Math.random() * 40;
     }
     timerId = window.setTimeout(nextChar, delay);
   };

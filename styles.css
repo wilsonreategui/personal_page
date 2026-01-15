@@ -244,21 +244,12 @@ p {
 .timeline-item summary .summary-type {
   color: var(--color-text-weak);
   padding: 0 6px;
+  border: 1px solid var(--color-border-muted);
   border-radius: 2px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-size: 0.85rem;
   transition: opacity 140ms ease;
-}
-
-.type-section.is-loaded .summary-type {
-  border: 1px solid var(--color-border-muted);
-}
-
-.type-section.is-typing .summary-type {
-  border-color: transparent;
-  background: transparent;
-  box-shadow: none;
 }
 
 .timeline-item summary .summary-fixed {
@@ -522,6 +513,16 @@ p {
   position: relative;
 }
 
+.typewriter-ready [data-typewriter-show] {
+  transition: opacity 160ms ease;
+}
+
+.typewriter-ready [data-typewriter-show].typewriter-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .section-icon {
   display: inline-flex;
   align-items: center;
@@ -532,8 +533,6 @@ p {
   color: var(--color-text-soft);
   font-size: 0.7rem;
   letter-spacing: 0.08em;
-  opacity: 0;
-  transition: opacity 160ms ease;
   font-family: inherit;
 }
 
@@ -541,21 +540,17 @@ p {
   content: "[ ]";
 }
 
-.type-section.is-typing .section-icon,
-.type-section.is-loaded .section-icon {
-  opacity: 1;
-}
-
 .type-section.is-typing .section-icon::before {
   animation: decompress-icon 5s steps(1, end) infinite;
 }
 
-.type-section.is-loaded .section-icon::before {
-  content: "[OK]";
+.type-section.is-typing .section-icon--loop::before {
+  content: "[>>>]";
+  animation: none;
 }
 
-.section-icon--loop {
-  opacity: 1;
+.type-section.is-loaded .section-icon::before {
+  content: "[OK]";
 }
 
 .type-section.is-loaded .section-icon--loop::before {
