@@ -49,7 +49,10 @@
     0 0 10px rgba(140, 140, 140, 0.16);
   --glow-glitch: 0 0 6px rgba(200, 200, 200, 0.35);
   --glow-glitch-soft: 0 0 6px rgba(200, 200, 200, 0.3);
-  --flicker-duration: 10s;
+  --flicker-duration: 16s;
+  --flicker-soft: 0.018;
+  --flicker-medium: 0.035;
+  --flicker-peak: 0.055;
   --base-font-size: 19px;
   --scanline: repeating-linear-gradient(180deg,
       rgba(0, 0, 0, 0.35) 0 2px,
@@ -94,6 +97,9 @@ html.theme-light {
     0 0 10px rgba(20, 20, 20, 0.12);
   --glow-glitch: 0 0 6px rgba(0, 0, 0, 0.25);
   --glow-glitch-soft: 0 0 6px rgba(0, 0, 0, 0.2);
+  --flicker-soft: 0.006;
+  --flicker-medium: 0.012;
+  --flicker-peak: 0.022;
   --scanline: repeating-linear-gradient(180deg,
       rgba(0, 0, 0, 0.08) 0 2px,
       rgba(0, 0, 0, 0) 2px 4px);
@@ -132,9 +138,21 @@ body::before {
   content: "";
   position: fixed;
   inset: 0;
+  z-index: 9999;
   pointer-events: none;
   background: var(--scanline);
   opacity: 0.35;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  background: #000;
+  opacity: 0;
+  animation: screen-flicker var(--flicker-duration) linear infinite;
 }
 
 .sr-only {
@@ -176,7 +194,8 @@ body::before {
 }
 
 .terminal {
-  max-width: 760px;
+  width: 100%;
+  max-width: 1024px;
   min-height: calc(100vh - 40px);
   min-height: calc(100dvh - 40px);
   margin: 0 auto;
@@ -194,7 +213,6 @@ body::before {
   box-shadow:
     /*0 0 0 2px #0f0f0f, 0 0 24px rgba(0, 0, 0, 0.6);*/
     none;
-  animation: terminal-flicker var(--flicker-duration) infinite;
 }
 
 .system-brand {
@@ -1074,6 +1092,16 @@ p {
   text-underline-offset: 6px;
 }
 
+.section-title--reset {
+  cursor: pointer;
+}
+
+.section-title--reset:hover,
+.section-title--reset:focus-visible {
+  color: var(--color-accent-active);
+  outline: none;
+}
+
 .section-line .line-fill {
   opacity: 0.6;
 }
@@ -1903,73 +1931,59 @@ html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"])
   }
 }
 
-@keyframes terminal-flicker {
+@keyframes screen-flicker {
 
   0%,
-  98%,
   100% {
-    opacity: 1;
-    filter: brightness(1);
+    opacity: 0;
   }
 
   2% {
-    opacity: 0.92;
-    filter: brightness(0.9);
+    opacity: var(--flicker-soft);
   }
 
-  3% {
-    opacity: 0.98;
-    filter: brightness(1.02);
+  2.6% {
+    opacity: 0;
   }
 
   8% {
-    opacity: 0.9;
-    filter: brightness(0.86);
+    opacity: var(--flicker-medium);
   }
 
-  9% {
-    opacity: 1;
-    filter: brightness(1);
+  8.6% {
+    opacity: 0;
   }
 
   18% {
-    opacity: 0.94;
-    filter: brightness(0.92);
+    opacity: var(--flicker-soft);
   }
 
-  19% {
-    opacity: 0.99;
-    filter: brightness(1);
+  18.6% {
+    opacity: 0;
   }
 
   44% {
-    opacity: 0.9;
-    filter: brightness(0.84);
+    opacity: var(--flicker-peak);
   }
 
-  45% {
-    opacity: 1;
-    filter: brightness(1.03);
+  44.7% {
+    opacity: 0;
   }
 
   62% {
-    opacity: 0.93;
-    filter: brightness(0.9);
+    opacity: var(--flicker-medium);
   }
 
-  63% {
-    opacity: 1;
-    filter: brightness(1);
+  62.6% {
+    opacity: 0;
   }
 
   81% {
-    opacity: 0.95;
-    filter: brightness(0.92);
+    opacity: var(--flicker-soft);
   }
 
-  82% {
-    opacity: 1;
-    filter: brightness(1);
+  81.6% {
+    opacity: 0;
   }
 }
 
@@ -2056,7 +2070,7 @@ html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"])
     animation: none;
   }
 
-  .terminal {
+  body::after {
     animation: none;
   }
 

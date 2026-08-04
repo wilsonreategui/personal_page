@@ -209,6 +209,41 @@ const initTextIndex = (scope) => {
   showView(select.value, { move: false });
 };
 
+const initSectionReset = (scope) => {
+  const title = scope.querySelector(
+    "[data-connector-target] .section-title"
+  );
+  if (!title) {
+    return;
+  }
+
+  title.classList.add("section-title--reset");
+  title.setAttribute("role", "button");
+  title.setAttribute("tabindex", "0");
+  title.setAttribute(
+    "aria-label",
+    `Volver a la vista inicial de ${title.textContent.trim()}`
+  );
+
+  const resetView = () => {
+    const select = scope.querySelector(".text-index-select");
+    if (select) {
+      select.value = "indice";
+      select.dispatchEvent(new Event("change", { bubbles: true }));
+      return;
+    }
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+  };
+
+  title.addEventListener("click", resetView);
+  title.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      resetView();
+    }
+  });
+};
+
 const initApp = () => {
   initCurrentDate();
   initLampIndicator();
@@ -220,6 +255,7 @@ const initApp = () => {
     onPageReady: (container) => {
       initAudioPlayers(container);
       initTextIndex(container);
+      initSectionReset(container);
       enhancePage(container);
     },
   });
