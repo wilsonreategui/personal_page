@@ -120,7 +120,7 @@ body {
   font-family: var(--font-body);
   font-size: 1rem;
   margin: 0;
-  padding: 32px;
+  padding: 20px 32px;
   line-height: 1.65;
   letter-spacing: 0.02em;
   color: var(--color-text);
@@ -177,13 +177,13 @@ body::before {
 
 .terminal {
   max-width: 760px;
-  min-height: calc(100vh - 64px);
-  min-height: calc(100dvh - 64px);
+  min-height: calc(100vh - 40px);
+  min-height: calc(100dvh - 40px);
   margin: 0 auto;
   background:
     /*#1a1a1a;*/
     transparent;
-  padding: 28px;
+  padding: 0 28px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -618,31 +618,52 @@ p {
 
 .timeline-item summary:hover,
 .timeline-item summary:focus-visible {
-  color: var(--color-text-strong);
+  color: var(--color-accent-active);
 }
 
 .timeline-item summary::after {
   content: "";
   position: absolute;
   inset: -3px -6px;
-  border: 1px solid transparent;
+  border: 1px solid var(--color-border-muted);
   border-radius: 0;
   pointer-events: none;
-  opacity: 0;
+  opacity: 0.4;
   transition: opacity 0ms linear, border-color 40ms linear;
   z-index: -1;
 }
 
 .timeline-item summary:hover::after,
 .timeline-item summary:focus-visible::after {
-  border-color: var(--color-text-soft);
-  opacity: 0.8;
+  border-color: var(--color-accent-active);
+  background: var(--color-bg-mid);
+  opacity: 1;
 }
 
 .timeline-item[open] summary::after {
-  border-color: var(--color-border-accent);
-  background: var(--color-border-muted);
-  opacity: 0.9;
+  border-color: var(--color-border-muted);
+  background: var(--color-bg-soft);
+  opacity: 0.55;
+}
+
+.timeline-item[open] summary:hover,
+.timeline-item[open] summary:focus-visible {
+  color: var(--color-accent-active);
+}
+
+.timeline-item[open] summary:hover::after,
+.timeline-item[open] summary:focus-visible::after {
+  border-color: var(--color-accent-active);
+  background: var(--color-bg-mid);
+  opacity: 1;
+}
+
+.timeline-item summary:hover::before,
+.timeline-item summary:focus-visible::before,
+.timeline-item summary:hover .summary-type,
+.timeline-item summary:focus-visible .summary-type {
+  border-color: var(--color-accent-active);
+  color: var(--color-accent-active);
 }
 
 .timeline-item .content {
@@ -1195,6 +1216,11 @@ p {
   margin-bottom: 0;
 }
 
+.information-copy {
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
 .note-label {
   display: flex;
   align-items: center;
@@ -1209,6 +1235,10 @@ p {
   line-height: 1;
 }
 
+.text-attribution {
+  text-align: right;
+}
+
 html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"]),
 html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"]) body {
   height: 100%;
@@ -1216,7 +1246,7 @@ html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"])
 }
 
 html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"]) .terminal {
-  height: calc(100dvh - 64px);
+  height: calc(100dvh - 40px);
   min-height: 0;
 }
 
@@ -1560,18 +1590,18 @@ html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"])
   }
 
   body {
-    padding: 0;
+    padding: 12px 0;
   }
 
   html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"]) .terminal {
-    height: 100dvh;
+    height: calc(100dvh - 24px);
   }
 
   .terminal {
     max-width: 100%;
-    min-height: 100vh;
-    min-height: 100dvh;
-    padding: 16px;
+    min-height: calc(100vh - 24px);
+    min-height: calc(100dvh - 24px);
+    padding: 0 16px;
     background: transparent;
   }
 
