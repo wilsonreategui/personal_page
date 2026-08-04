@@ -27,8 +27,7 @@ scripts/effects.js         Typewriter, glitch, marquee y conectores
 scripts/theme.js           Tema claro/oscuro persistente
 scripts/audio-player.js    Reproductores accesibles
 pages/                     Contenido HTML de cada sección
-photos/                    Imágenes originales
-photos/web/                Copias optimizadas para la página
+photos/                    Imágenes optimizadas para la página
 audio/                     Archivos de audio
 ```
 
@@ -58,6 +57,5 @@ Ejemplo:
 - Mantener cada sección como contenido semántico y no como lógica JavaScript.
 - Inicializar interacciones reutilizables desde `app.js`.
 - Respetar `prefers-reduced-motion` al agregar animaciones.
-- Usar imágenes optimizadas en la página y conservar los originales por
-  separado.
+- Usar imágenes optimizadas para web dentro de `photos/`.
 
