@@ -1,20 +1,28 @@
 export const PAGE_MODULES = Object.freeze([
   {
+    id: "inicio",
+    label: "Inicio",
+    path: "pages/inicio.html",
+  },
+  {
     id: "archivos",
-    label: "Relatos",
+    label: "Textos",
     path: "pages/archivos.html",
     isNew: true,
+  },
+  {
+    id: "proyectos-musicales",
+    label: "Música",
+    path: "pages/proyectos-musicales.html",
   },
   {
     id: "informacion",
     label: "Información",
     path: "pages/informacion.html",
   },
-  // Para habilitar Música, agrega su entrada aquí. El menú y el router
-  // se generan desde este único registro.
 ]);
 
-export const DEFAULT_PAGE = "informacion";
+export const DEFAULT_PAGE = "inicio";
 
 export const getPageModule = (pageId) =>
   PAGE_MODULES.find((page) => page.id === pageId) || null;

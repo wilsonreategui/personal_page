@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es" data-active-page="informacion">
+<html lang="es" data-active-page="inicio">
 
 <head>
     <meta charset="utf-8" />
@@ -13,36 +13,49 @@
 
 <body>
     <main class="terminal" aria-label="Consola personal">
-        <svg class="menu-connector" aria-hidden="true" focusable="false"></svg>
-        <section class="type-section" data-typewriter-section="name" id="informacion">
-            <p class="line section-line">
-                <span class="prompt">#</span><span class="">Inicio</span><span class="line-fill" aria-hidden="true"
-                    data-typewriter-show></span>
-                <!-- <span class="section-icon" aria-hidden="true"
-                    data-typewriter-show></span> -->
-            </p>
-            <div class="name-row">
-                <h1>Wilson Reátegui</h1>
-                <nav class="name-menu" aria-label="Menu principal">
-                    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-menu-items"
-                        aria-label="Abrir menú">
-                        <span></span><span></span><span></span>
-                    </button>
-                    <div class="name-menu__items" id="main-menu-items"></div>
-                    <button class="name-menu__item lamp-toggle" type="button" aria-label="Cambiar tema"
-                        aria-pressed="false">
-                        <span class="lamp-icon" aria-hidden="true">
-                            <span class="lamp-glyph"></span>
-                        </span>
-                    </button>
-                </nav>
+        <header class="system-brand" aria-label="Identidad del sitio">
+            <a class="system-brand__mark" href="#inicio" aria-label="Ir al inicio">
+                <span class="system-brand__monogram" aria-hidden="true">WR</span>
+            </a>
+            <div class="system-brand__data">
+                <p class="system-brand__title">WILSON REÁTEGUI</p>
+                <p class="system-brand__status">ESTADO: EN LÍNEA</p>
             </div>
-        </section>
-        <p class="sr-only" data-route-status aria-live="polite"></p>
-        <div id="page-content" data-page-container aria-busy="false"></div>
-        <noscript>
-            <p class="page-status">Esta página necesita JavaScript para cargar sus secciones.</p>
-        </noscript>
+            <div class="system-brand__controls">
+                <time class="system-brand__date" data-current-date aria-label="Fecha actual"></time>
+                <button class="system-brand__theme lamp-toggle" type="button" aria-label="Cambiar tema"
+                    aria-pressed="false">
+                    <span class="lamp-icon" aria-hidden="true">
+                        <span class="lamp-glyph"></span>
+                    </span>
+                </button>
+            </div>
+        </header>
+        <div class="terminal-body">
+            <svg class="menu-connector" aria-hidden="true" focusable="false"></svg>
+            <section class="type-section" data-typewriter-section="name" id="cabecera">
+                <p class="line section-line">
+                    <span class="prompt">#</span><span class="">Menú</span><span class="line-fill" aria-hidden="true"
+                        data-typewriter-show></span>
+                    <!-- <span class="section-icon" aria-hidden="true"
+                        data-typewriter-show></span> -->
+                </p>
+                <div class="name-row">
+                    <nav class="name-menu" aria-label="Menu principal">
+                        <button class="menu-toggle" type="button" aria-expanded="false"
+                            aria-controls="main-menu-items" aria-label="Abrir menú">
+                            <span></span><span></span><span></span>
+                        </button>
+                        <div class="name-menu__items" id="main-menu-items"></div>
+                    </nav>
+                </div>
+            </section>
+            <p class="sr-only" data-route-status aria-live="polite"></p>
+            <div id="page-content" data-page-container aria-busy="false"></div>
+            <noscript>
+                <p class="page-status">Esta página necesita JavaScript para cargar sus secciones.</p>
+            </noscript>
+        </div>
     </main>
     <script type="module" src="scripts/app.js"></script>
 </body>

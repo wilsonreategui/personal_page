@@ -374,7 +374,7 @@ const startTypewriter = (scope = document) => {
 };
 
 const updateMenuConnector = () => {
-  const container = document.querySelector(".terminal");
+  const container = document.querySelector(".terminal-body");
   const svg = document.querySelector(".menu-connector");
   const pageContainer = document.querySelector("[data-page-container]");
   if (!container || !svg || !pageContainer) {
@@ -469,9 +469,9 @@ export const enhancePage = async (scope = document) => {
 };
 
 export const initEffects = () => {
-  const terminal = document.querySelector(".terminal");
-  if (terminal && window.ResizeObserver) {
-    new ResizeObserver(requestConnectorUpdate).observe(terminal);
+  const terminalBody = document.querySelector(".terminal-body");
+  if (terminalBody && window.ResizeObserver) {
+    new ResizeObserver(requestConnectorUpdate).observe(terminalBody);
   }
 
   window.addEventListener("resize", () => {
