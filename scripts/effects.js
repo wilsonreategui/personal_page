@@ -435,13 +435,25 @@ const updateMenuConnector = () => {
     return;
   }
 
-  const startX = Math.round(
-    sourceRect.left + sourceRect.width / 2 - containerRect.left
-  );
-  const startY = Math.round(sourceRect.bottom - containerRect.top + 6);
-  const deltaY = endY - startY;
-  const drop = Math.max(12, Math.min(34, Math.abs(deltaY) * 0.4));
-  const middleY = Math.round(startY + Math.sign(deltaY || 1) * drop);
+  const isMobile = window.matchMedia("(max-width: 640px)").matches;
+  let pathData;
+
+  if (isMobile) {
+    const startX = Math.round(sourceRect.left - containerRect.left - 6);
+    const startY = Math.round(
+      sourceRect.top + sourceRect.height / 2 - containerRect.top
+    );
+    pathData = `M ${startX} ${startY} H ${endX} V ${endY}`;
+  } else {
+    const startX = Math.round(
+      sourceRect.left + sourceRect.width / 2 - containerRect.left
+    );
+    const startY = Math.round(sourceRect.bottom - containerRect.top + 6);
+    const deltaY = endY - startY;
+    const drop = Math.max(12, Math.min(34, Math.abs(deltaY) * 0.4));
+    const middleY = Math.round(startY + Math.sign(deltaY || 1) * drop);
+    pathData = `M ${startX} ${startY} V ${middleY} H ${endX} V ${endY}`;
+  }
 
   svg.setAttribute(
     "viewBox",
@@ -449,10 +461,7 @@ const updateMenuConnector = () => {
   );
   svg.replaceChildren();
   const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-  path.setAttribute(
-    "d",
-    `M ${startX} ${startY} V ${middleY} H ${endX} V ${endY}`
-  );
+  path.setAttribute("d", pathData);
   svg.append(path);
 };
 
