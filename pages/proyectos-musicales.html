@@ -1,6 +1,75 @@
-<section class="type-section page-section" data-typewriter-section="proyectos-musicales" data-page="proyectos-musicales"
-  id="proyectos-musicales">
-  <p class="line section-line" data-connector-target="proyectos-musicales"><span class="prompt">#</span><span
-      class="section-title">Música</span><span class="line-fill" aria-hidden="true" data-typewriter-show></span>
+<section class="type-section page-section indexed-page" data-typewriter-section="proyectos-musicales"
+  data-page="proyectos-musicales" id="proyectos-musicales">
+  <p class="line section-line text-section-line" data-connector-target="proyectos-musicales"><span
+      class="prompt">#</span><span class="section-title">Música</span><label class="text-index-control"
+      data-typewriter-skip><span class="sr-only">Seleccionar proyecto musical</span><select class="text-index-select"
+        aria-label="Seleccionar proyecto musical">
+        <option value="indice" selected>Índice&nbsp;</option>
+        <option value="into-the-void">Into the Void (Mixtape)&nbsp;</option>
+      </select></label><span class="line-fill" aria-hidden="true" data-typewriter-show></span>
   </p>
+
+  <div class="text-content-scroll" id="music-content-scroll">
+    <nav class="text-index-list" aria-label="Índice de proyectos musicales" data-typewriter-show>
+      <section class="text-index-list__group" aria-labelledby="indice-mixtapes">
+        <h3 class="text-index-list__heading" id="indice-mixtapes">Mixtapes</h3>
+        <button class="text-index-list__item" type="button" data-text-value="into-the-void">
+          <span>Into the Void (Mixtape)</span>
+          <span class="text-index-list__icon" aria-hidden="true">♫</span>
+        </button>
+      </section>
+    </nav>
+
+    <div data-text-view="into-the-void" hidden>
+      <details class="timeline-item">
+        <summary data-text-heading="into-the-void" data-typewriter-show><span class="summary-fixed">1.0</span> <span
+            class="summary-clip"><span class="summary-move"><span class="summary-type" data-typewriter-show>Texto</span>
+              Notas</span></span></summary>
+        <div class="content">
+          <p class="note-label"><span class="note-label__icon" aria-hidden="true">▤</span><span>Into the Void</span></p>
+          <p>Quizá exista algo más allá de lo que conocemos: una sonrisa, un amor, una vida y la muerte; y junto a
+            ellas, el vacío, un abismo del cual pocas veces los hombres perdidos pueden escapar.</p>
+          <p class="note-label"><span class="note-label__icon" aria-hidden="true">▤</span><span>Teo</span></p>
+          <p>Aquella voz siempre estará conmigo. Ahora tiene un nombre con el cual recordarlo, con el cual olvidarlo.
+          </p>
+          <p>Sin darme cuenta, se convirtió en mi único amigo.</p>
+          <p class="note-label"><span class="note-label__icon" aria-hidden="true">▤</span><span>Circunstancias en el
+              Complex, Pt.1</span></p>
+          <p>Un viaje inesperado, un amor en lágrimas, emociones perdidas junto a la la tristeza de
+            mis seres queridos. Una familia rota en delirios sin forma.</p>
+          <p>Toda una vida pensando en volver a esos momentos, obsesionado con los recuerdos de aquellos tiempos
+            salvajes, obsesionado con la desdicha en aquellos deseos perdidos.</p>
+          <p class="note-label"><span class="note-label__icon" aria-hidden="true">▤</span><span>Incursión 0</span></p>
+          <p>Un lugar vacío donde el destino se encuentra escrito en el lienzo de nuestras memorias.</p>
+          <p class="note-label"><span class="note-label__icon" aria-hidden="true">▤</span><span>R u with me? (La
+              Travesía)</span></p>
+          <p>Teo y yo no estamos solos. Algo más despertó en esta travesía.</p>
+        </div>
+      </details>
+      <details class="timeline-item">
+        <summary data-text-heading="into-the-void" data-typewriter-show><span class="summary-fixed">2.0</span> <span
+            class="summary-clip"><span class="summary-move"><span class="summary-type" data-typewriter-show>Video</span>
+              Mixtape</span></span></summary>
+        <div class="content">
+          <div class="video video--plain" data-typewriter-show>
+            <iframe src="https://www.youtube.com/embed/f4oyWj1ddO4" title="Into the Void (Mixtape)" loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen></iframe>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <div class="text-scrollbar">
+    <button class="text-scrollbar__button text-scrollbar__button--up" type="button"
+      aria-label="Desplazar hacia arriba"></button>
+    <div class="text-scrollbar__track" role="scrollbar" aria-label="Desplazamiento del proyecto musical"
+      aria-controls="music-content-scroll" aria-orientation="vertical" aria-valuemin="0" aria-valuemax="100"
+      aria-valuenow="0" tabindex="0">
+      <span class="text-scrollbar__thumb" aria-hidden="true"></span>
+    </div>
+    <button class="text-scrollbar__button text-scrollbar__button--down" type="button"
+      aria-label="Desplazar hacia abajo"></button>
+  </div>
 </section>

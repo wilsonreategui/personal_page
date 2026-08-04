@@ -25,7 +25,7 @@ const initCurrentDate = () => {
 
 const initTextIndex = (scope) => {
   const select = scope.querySelector(".text-index-select");
-  const index = scope.querySelector("#textos-indice");
+  const index = scope.querySelector(".text-index-list");
   const scrollViewport = scope.querySelector(".text-content-scroll");
   const views = Array.from(scope.querySelectorAll("[data-text-view]"));
   if (!select || !index || !scrollViewport || !views.length) {

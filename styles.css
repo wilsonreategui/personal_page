@@ -490,7 +490,8 @@ p {
   cursor: pointer;
   font-size: 1.1rem;
   color: var(--color-text-soft);
-  margin: 0 0 8px 0;
+  box-sizing: border-box;
+  margin: 3px 6px 8px;
   padding-left: 20px;
   padding-right: 12px;
   display: flex;
@@ -625,7 +626,7 @@ p {
   position: absolute;
   inset: -3px -6px;
   border: 1px solid transparent;
-  border-radius: 2px;
+  border-radius: 0;
   pointer-events: none;
   opacity: 0;
   transition: opacity 0ms linear, border-color 40ms linear;
@@ -653,6 +654,12 @@ p {
   border: 1px solid var(--color-border);
   background: var(--color-bg);
   padding: 8px;
+}
+
+.video--plain {
+  border: 0;
+  background: transparent;
+  padding: 0;
 }
 
 .video iframe {
@@ -1188,48 +1195,62 @@ p {
   margin-bottom: 0;
 }
 
-html[data-active-page="archivos"],
-html[data-active-page="archivos"] body {
+.note-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--color-text-soft);
+  text-align: left;
+}
+
+.note-label__icon {
+  color: inherit;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"]),
+html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"]) body {
   height: 100%;
   overflow: hidden;
 }
 
-html[data-active-page="archivos"] .terminal {
+html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"]) .terminal {
   height: calc(100dvh - 64px);
   min-height: 0;
 }
 
-html[data-active-page="archivos"] .terminal-body {
+html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"]) .terminal-body {
   display: flex;
   min-height: 0;
   flex-direction: column;
   overflow: hidden;
 }
 
-html[data-active-page="archivos"] #cabecera {
+html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"]) #cabecera {
   flex: 0 0 auto;
 }
 
-html[data-active-page="archivos"] [data-page-container] {
+html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"]) [data-page-container] {
   flex: 1 1 auto;
   min-height: 0;
   overflow: hidden;
 }
 
-html[data-active-page="archivos"] #archivos {
+.indexed-page {
   display: flex;
   height: 100%;
   min-height: 0;
   flex-direction: column;
 }
 
-html[data-active-page="archivos"] .text-section-line {
+.indexed-page .text-section-line {
   flex: 0 0 auto;
   margin-bottom: 0;
   padding-bottom: 24px;
 }
 
-html[data-active-page="archivos"] .text-content-scroll {
+.indexed-page .text-content-scroll {
   min-height: 0;
   flex: 1 1 auto;
   overflow-x: hidden;
@@ -1238,24 +1259,24 @@ html[data-active-page="archivos"] .text-content-scroll {
   scrollbar-width: none;
 }
 
-html[data-active-page="archivos"] .text-content-scroll > [data-text-view],
-html[data-active-page="archivos"] .text-content-scroll > .text-index-list {
+.indexed-page .text-content-scroll > [data-text-view],
+.indexed-page .text-content-scroll > .text-index-list {
   box-sizing: border-box;
   padding: 0 4px 18px;
 }
 
-html[data-active-page="archivos"] .text-content-scroll.has-scrollbar > [data-text-view],
-html[data-active-page="archivos"] .text-content-scroll.has-scrollbar > .text-index-list {
+.indexed-page .text-content-scroll.has-scrollbar > [data-text-view],
+.indexed-page .text-content-scroll.has-scrollbar > .text-index-list {
   padding-right: 28px;
 }
 
-html[data-active-page="archivos"] .text-content-scroll::-webkit-scrollbar {
+.indexed-page .text-content-scroll::-webkit-scrollbar {
   display: none;
   width: 0;
   height: 0;
 }
 
-html[data-active-page="archivos"] .text-scrollbar {
+.indexed-page .text-scrollbar {
   position: absolute;
   right: 0;
   display: flex;
@@ -1268,7 +1289,7 @@ html[data-active-page="archivos"] .text-scrollbar {
   z-index: 1;
 }
 
-html[data-active-page="archivos"] .text-scrollbar__button {
+.indexed-page .text-scrollbar__button {
   position: relative;
   width: 12px;
   height: 12px;
@@ -1281,7 +1302,7 @@ html[data-active-page="archivos"] .text-scrollbar__button {
   cursor: pointer;
 }
 
-html[data-active-page="archivos"] .text-scrollbar__button::before {
+.indexed-page .text-scrollbar__button::before {
   content: "";
   position: absolute;
   top: 50%;
@@ -1292,27 +1313,27 @@ html[data-active-page="archivos"] .text-scrollbar__button::before {
   border-bottom: 1px solid currentColor;
 }
 
-html[data-active-page="archivos"] .text-scrollbar__button--up::before {
+.indexed-page .text-scrollbar__button--up::before {
   transform: translate(-50%, -50%) rotate(225deg);
 }
 
-html[data-active-page="archivos"] .text-scrollbar__button--down::before {
+.indexed-page .text-scrollbar__button--down::before {
   transform: translate(-50%, -50%) rotate(45deg);
 }
 
-html[data-active-page="archivos"] .text-scrollbar__button:hover,
-html[data-active-page="archivos"] .text-scrollbar__button:focus-visible {
+.indexed-page .text-scrollbar__button:hover,
+.indexed-page .text-scrollbar__button:focus-visible {
   color: var(--color-accent-active);
   outline: none;
 }
 
-html[data-active-page="archivos"] .text-scrollbar__button:disabled {
+.indexed-page .text-scrollbar__button:disabled {
   color: var(--color-text-dim);
   cursor: default;
   opacity: 0.55;
 }
 
-html[data-active-page="archivos"] .text-scrollbar__track {
+.indexed-page .text-scrollbar__track {
   position: relative;
   min-height: 28px;
   flex: 1 1 auto;
@@ -1320,7 +1341,7 @@ html[data-active-page="archivos"] .text-scrollbar__track {
   outline: none;
 }
 
-html[data-active-page="archivos"] .text-scrollbar__thumb {
+.indexed-page .text-scrollbar__thumb {
   position: absolute;
   top: 0;
   left: 2px;
@@ -1335,12 +1356,12 @@ html[data-active-page="archivos"] .text-scrollbar__thumb {
   transform: translateY(0);
 }
 
-html[data-active-page="archivos"] .text-scrollbar__track:hover .text-scrollbar__thumb,
-html[data-active-page="archivos"] .text-scrollbar__track:focus-visible .text-scrollbar__thumb {
+.indexed-page .text-scrollbar__track:hover .text-scrollbar__thumb,
+.indexed-page .text-scrollbar__track:focus-visible .text-scrollbar__thumb {
   background: var(--color-accent-active);
 }
 
-html[data-active-page="archivos"] [data-text-view] p {
+.indexed-page [data-text-view] p {
   font-size: 0.88rem;
   line-height: 1.55;
 }
@@ -1441,7 +1462,7 @@ html[data-active-page="archivos"] [data-text-view] p {
 
 .home-menu__grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
   margin-top: 18px;
 }
@@ -1542,7 +1563,7 @@ html[data-active-page="archivos"] [data-text-view] p {
     padding: 0;
   }
 
-  html[data-active-page="archivos"] .terminal {
+  html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"]) .terminal {
     height: 100dvh;
   }
 
