@@ -1601,22 +1601,24 @@ html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"])
     max-width: 100%;
     min-height: calc(100vh - 24px);
     min-height: calc(100dvh - 24px);
-    padding: 0 16px;
+    padding: 0 10px;
     background: transparent;
   }
 
   .system-brand {
-    grid-template-columns: 46px minmax(0, 1fr);
-    gap: 5px 9px;
-    margin-bottom: 10px;
-    padding: 11px;
+    grid-template-columns: 46px minmax(0, 1fr) auto;
+    gap: 9px;
+    margin-bottom: 0;
+    padding: 4px 4px 12px;
+    border: 0;
+    border-bottom: 3px double var(--color-frame);
+    box-shadow: none;
   }
 
   .terminal .system-brand__mark {
     width: 46px;
     height: 46px;
     min-height: 46px;
-    grid-row: 1 / span 2;
   }
 
   .system-brand__monogram {
@@ -1632,8 +1634,8 @@ html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"])
   }
 
   .system-brand__controls {
-    grid-column: 2;
-    justify-content: flex-start;
+    grid-column: 3;
+    justify-content: flex-end;
     gap: 8px;
   }
 
@@ -1652,7 +1654,9 @@ html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"])
   }
 
   .terminal-body {
-    padding: 16px;
+    padding: 12px 4px 0;
+    border: 0;
+    box-shadow: none;
   }
 
   h1 {
@@ -1679,7 +1683,7 @@ html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"])
   }
 
   .text-section-line {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
   }
 
   .text-section-line .line-fill {
@@ -1687,7 +1691,6 @@ html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"])
   }
 
   .text-index-control {
-    order: 2;
     flex: 0 0 auto;
     margin-left: 0;
   }
