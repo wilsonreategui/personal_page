@@ -4,7 +4,9 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Wilson Reategui</title>
+    <meta name="description"
+        content="Portafolio personal de Wilson Reátegui: software, música, relatos y archivos creativos." />
+    <title>Wilson Reátegui</title>
     <link rel="preload" href="fonts/VT323-Regular.ttf" as="font" type="font/ttf" crossorigin />
     <link rel="stylesheet" href="styles.css" />
 </head>
@@ -23,16 +25,10 @@
                 <h1>Wilson Reátegui</h1>
                 <nav class="name-menu" aria-label="Menu principal">
                     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-menu-items"
-                        aria-label="Abrir menu">
+                        aria-label="Abrir menú">
                         <span></span><span></span><span></span>
                     </button>
-                    <div class="name-menu__items" id="main-menu-items">
-                        <a class="name-menu__item is-active" href="#archivos" data-page="archivos">Relatos<span
-                                class="new-flag" aria-label="Nuevo">!</span></a>
-                        <a class="name-menu__item" href="#informacion" data-page="informacion">Información</a>
-                        <!-- <a class="name-menu__item" href="#proyectos-musicales"
-                            data-page="proyectos-musicales">Música</a> -->
-                    </div>
+                    <div class="name-menu__items" id="main-menu-items"></div>
                     <button class="name-menu__item lamp-toggle" type="button" aria-label="Cambiar tema"
                         aria-pressed="false">
                         <span class="lamp-icon" aria-hidden="true">
@@ -42,9 +38,13 @@
                 </nav>
             </div>
         </section>
-        <div id="page-content" data-page-container aria-live="polite"></div>
+        <p class="sr-only" data-route-status aria-live="polite"></p>
+        <div id="page-content" data-page-container aria-busy="false"></div>
+        <noscript>
+            <p class="page-status">Esta página necesita JavaScript para cargar sus secciones.</p>
+        </noscript>
     </main>
-    <script src="scripts.js"></script>
+    <script type="module" src="scripts/app.js"></script>
 </body>
 
 </html>
