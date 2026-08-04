@@ -8,7 +8,6 @@ export const PAGE_MODULES = Object.freeze([
     id: "archivos",
     label: "Textos",
     path: "pages/archivos.html",
-    isNew: true,
   },
   {
     id: "proyectos-musicales",

@@ -193,6 +193,8 @@ const collectTypewriterItems = (root) => {
           const parent = node.parentElement;
           if (
             parent.closest("script, style, noscript") ||
+            parent.closest("[hidden]") ||
+            parent.closest("[data-typewriter-skip]") ||
             (parent.closest("details:not([open])") &&
               !parent.closest("summary")) ||
             (parent.closest("[aria-hidden='true']") &&
@@ -201,6 +203,10 @@ const collectTypewriterItems = (root) => {
             return NodeFilter.FILTER_REJECT;
           }
           return NodeFilter.FILTER_ACCEPT;
+        }
+
+        if (node.nodeType === Node.ELEMENT_NODE && node.closest("[hidden]")) {
+          return NodeFilter.FILTER_REJECT;
         }
 
         if (
