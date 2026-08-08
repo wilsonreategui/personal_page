@@ -1,7 +1,5 @@
 import { DEFAULT_PAGE, PAGE_MODULES, getPageModule } from "./config.js";
 
-const INDEXED_PAGES = new Set(["archivos", "proyectos-musicales"]);
-
 export const parseHashRoute = (hash = "") => {
   const hashValue = hash.startsWith("#") ? hash.slice(1) : hash;
   let decodedHash = "";
@@ -27,9 +25,7 @@ const getRouteFromHash = () => parseHashRoute(window.location.hash);
 const createMenuItem = (page) => {
   const item = document.createElement("a");
   item.className = "name-menu__item";
-  item.href = INDEXED_PAGES.has(page.id)
-    ? `#${page.id}/indice`
-    : `#${page.id}`;
+  item.href = page.indexed ? `#${page.id}/indice` : `#${page.id}`;
   item.dataset.page = page.id;
   item.textContent = page.label;
 
@@ -65,6 +61,9 @@ export const initNavigation = ({ onNavigate, onReset } = {}) => {
     }
 
     document.documentElement.dataset.activePage = page.id;
+    document.documentElement.dataset.layout = page.indexed
+      ? "indexed"
+      : "flow";
     items.forEach((item) => {
       const isActive = item.dataset.page === page.id;
       item.classList.toggle("is-active", isActive);

@@ -32,7 +32,7 @@
 
     <div data-text-view="into-the-void" hidden>
       <details class="timeline-item">
-        <summary data-text-heading="into-the-void" data-typewriter-show><span class="summary-fixed">2.0</span> <span
+        <summary data-text-heading="into-the-void" data-typewriter-show><span class="summary-fixed">3.0</span> <span
             class="summary-clip"><span class="summary-move"><span class="summary-type" data-typewriter-show>Video</span>
               Into the Void</span></span></summary>
         <div class="content">
@@ -41,6 +41,16 @@
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowfullscreen></iframe>
           </div>
+        </div>
+      </details>
+      <details class="timeline-item">
+        <summary data-text-heading="into-the-void" data-typewriter-show><span class="summary-fixed">2.0</span> <span
+            class="summary-clip"><span class="summary-move"><span class="summary-type" data-typewriter-show>Texto</span>
+              Créditos</span></span></summary>
+        <div class="content">
+          <p>BATERÍA: Okami Creator (Canción: Into the Void)</p>
+          <p>BATERÍA: Kevin Eustaquio (Canción: R u with me? (La Travesía))</p>
+          <p>GRABACIÓN, MEZCLA & MASTERING: Orange & the Complex</p>
         </div>
       </details>
       <details class="timeline-item" open>
@@ -69,52 +79,23 @@
       </details>
     </div>
 
-    <div data-text-view="sol-001" hidden>
-      <details class="timeline-item">
-        <summary data-text-heading="sol-001" data-typewriter-show><span class="summary-fixed">1.1</span> <span
-            class="summary-clip"><span class="summary-move"><span class="summary-type" data-typewriter-show>AUDIO</span>
-              snf_sol_001</span></span></summary>
-        <div class="content">
-          <div class="audio-player" data-typewriter-show>
-            <button class="audio-toggle" type="button" aria-label="Reproducir" data-state="play"></button>
-            <div class="audio-bar" role="slider" aria-label="Barra de reproducción" aria-valuemin="0"
-              aria-valuemax="100" aria-valuenow="0" tabindex="0">
-              <div class="audio-bar-fill"></div>
-              <div class="audio-bar-head"></div>
-            </div>
-            <span class="audio-time">0:00 / 0:00</span>
-            <audio class="audio-element" preload="metadata">
-              <source src="audio/complex.wav" type="audio/wav">
-            </audio>
-          </div>
+    <div data-text-view="sol-001" data-text-heading="sol-001" hidden>
+      <div class="audio-player" data-typewriter-show>
+        <button class="audio-toggle" type="button" aria-label="Reproducir" data-state="play"></button>
+        <div class="audio-bar" role="slider" aria-label="Barra de reproducción" aria-valuemin="0" aria-valuemax="100"
+          aria-valuenow="0" tabindex="0">
+          <div class="audio-bar-fill"></div>
+          <div class="audio-bar-head"></div>
         </div>
-      </details>
-      <details class="timeline-item" open>
-        <summary data-text-heading="sol-001" data-typewriter-show><span class="summary-fixed">1.0</span> <span
-            class="summary-clip"><span class="summary-move"><span class="summary-type" data-typewriter-show>Texto</span>
-              Notas</span></span></summary>
-        <div class="content">
-          <p class="note-label">[snf_sol_001.WAV]</p>
-          <p>- Audio creado con software propio para generar onda de audio a información desde formato FITS/HMI.</p>
-          <p>- Para este track en se usó data extraída desde JSOC, un portal de ciencia.
-          </p>
-          <p>
-            - Se usó información enfocada específicamente en la actividad solar y el campo magnético.
-          </p>
-        </div>
-      </details>
+        <span class="audio-time">0:00 / 0:00</span>
+        <audio class="audio-element" preload="metadata">
+          <source src="audio/complex.wav" type="audio/wav">
+        </audio>
+      </div>
+      <p class="note-label">[snf_sol_001.WAV]</p>
+      <p>- Audio creado con software propio para generar onda de audio a información desde formato FITS/HMI.</p>
+      <p>- Para este track en se usó data extraída desde JSOC, un portal de ciencia.</p>
+      <p>- Se usó información enfocada en la actividad solar y el campo magnético.</p>
     </div>
-  </div>
-
-  <div class="text-scrollbar">
-    <button class="text-scrollbar__button text-scrollbar__button--up" type="button"
-      aria-label="Desplazar hacia arriba"></button>
-    <div class="text-scrollbar__track" role="scrollbar" aria-label="Desplazamiento del sonido"
-      aria-controls="music-content-scroll" aria-orientation="vertical" aria-valuemin="0" aria-valuemax="100"
-      aria-valuenow="0" tabindex="0">
-      <span class="text-scrollbar__thumb" aria-hidden="true"></span>
-    </div>
-    <button class="text-scrollbar__button text-scrollbar__button--down" type="button"
-      aria-label="Desplazar hacia abajo"></button>
   </div>
 </section>

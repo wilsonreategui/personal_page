@@ -108,7 +108,7 @@ export const requestMarqueeUpdate = () => {
 
 const registerGlitchTargets = (scope = document) => {
   scope
-    .querySelectorAll(".section-title, .project-title, .arc, h1")
+    .querySelectorAll(".section-title, .arc, h1")
     .forEach((element) => element.classList.add("glitch-target"));
 };
 
@@ -294,6 +294,10 @@ const startTypewriter = (scope = document) => {
         textItems,
         revealItems,
         totalChars,
+        // El conector apunta al centro del título, que se mueve mientras se
+        // escribe: esta sección lo redibuja en cada tick para que aparezca con
+        // la primera letra en vez de al final del render.
+        hasConnector: Boolean(section.querySelector("[data-connector-target]")),
         // Todas las secciones apuntan a la misma duración, así que la velocidad
         // se deduce de su largo en vez de ser fija por carácter.
         charsPerSecond: Math.min(
@@ -341,6 +345,7 @@ const startTypewriter = (scope = document) => {
         entry.section.classList.remove("is-typing");
         entry.section.classList.add("is-loaded");
       });
+      requestConnectorUpdate();
       finish();
     }
 
@@ -406,6 +411,10 @@ const startTypewriter = (scope = document) => {
         }
 
         pause += punctuationPause(character, entry.charsPerSecond);
+      }
+
+      if (entry.hasConnector) {
+        requestConnectorUpdate();
       }
 
       const interval = Math.round((perTick * 1000) / entry.charsPerSecond);
@@ -522,6 +531,9 @@ export const requestConnectorUpdate = () => {
 export const enhancePage = async (scope = document) => {
   registerGlitchTargets(scope);
   scope.querySelectorAll(".summary-move").forEach(prepareMarqueeText);
+  // Se pide antes y después: el tecleo lo va corrigiendo tick a tick, pero si
+  // no hay nada que escribir (movimiento reducido) esta es la única pasada.
+  requestConnectorUpdate();
   await startTypewriter(scope);
   requestMarqueeUpdate();
   requestConnectorUpdate();

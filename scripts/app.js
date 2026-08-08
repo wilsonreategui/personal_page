@@ -5,10 +5,7 @@ import {
   requestConnectorUpdate,
   requestMarqueeUpdate,
 } from "./effects.js";
-import {
-  initNavigation,
-  parseHashRoute,
-} from "./navigation.js?v=20260807-2";
+import { initNavigation, parseHashRoute } from "./navigation.js";
 import { createPageRouter } from "./router.js";
 import { initLampIndicator, initTheme } from "./theme.js";
 
@@ -24,6 +21,59 @@ const initCurrentDate = () => {
   const year = now.getFullYear();
   dateElement.textContent = `${day}/${month}/${year}`;
   dateElement.dateTime = `${year}-${month}-${day}`;
+};
+
+// El scrollbar es cromo sin contenido y era idéntico en las dos páginas
+// indexadas, así que se arma acá y su aria-controls sale del viewport real.
+// Cuelga de .indexed-page y no del scope: sus reglas lo exigen como
+// descendiente y se posiciona en absoluto contra esa sección.
+const buildScrollbar = (viewport) => {
+  const host = viewport.closest(".indexed-page");
+  if (!host) {
+    return null;
+  }
+
+  const existing = host.querySelector(".text-scrollbar");
+  if (existing) {
+    return existing;
+  }
+
+  const scrollbar = document.createElement("div");
+  scrollbar.className = "text-scrollbar";
+
+  const button = (direction, label) => {
+    const element = document.createElement("button");
+    element.className = `text-scrollbar__button text-scrollbar__button--${direction}`;
+    element.type = "button";
+    element.setAttribute("aria-label", label);
+    return element;
+  };
+
+  const track = document.createElement("div");
+  track.className = "text-scrollbar__track";
+  track.tabIndex = 0;
+  Object.entries({
+    role: "scrollbar",
+    "aria-label": "Desplazamiento del contenido",
+    "aria-controls": viewport.id,
+    "aria-orientation": "vertical",
+    "aria-valuemin": "0",
+    "aria-valuemax": "100",
+    "aria-valuenow": "0",
+  }).forEach(([name, value]) => track.setAttribute(name, value));
+
+  const thumb = document.createElement("span");
+  thumb.className = "text-scrollbar__thumb";
+  thumb.setAttribute("aria-hidden", "true");
+  track.append(thumb);
+
+  scrollbar.append(
+    button("up", "Desplazar hacia arriba"),
+    track,
+    button("down", "Desplazar hacia abajo")
+  );
+  host.append(scrollbar);
+  return scrollbar;
 };
 
 const initTextIndex = (scope, initialValue = null) => {
@@ -66,7 +116,7 @@ const initTextIndex = (scope, initialValue = null) => {
     delete selectLabel.dataset.prepared;
   };
 
-  const scrollbar = scope.querySelector(".text-scrollbar");
+  const scrollbar = buildScrollbar(scrollViewport);
   const scrollTrack = scrollbar?.querySelector(".text-scrollbar__track");
   const scrollThumb = scrollbar?.querySelector(".text-scrollbar__thumb");
   const scrollUp = scrollbar?.querySelector(".text-scrollbar__button--up");

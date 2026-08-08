@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es" data-active-page="inicio">
+<html lang="es" data-active-page="inicio" data-layout="flow">
 
 <head>
     <meta charset="utf-8" />
@@ -12,6 +12,28 @@
 </head>
 
 <body>
+    <!-- Ilustración compartida por las tarjetas de entrada de inicio y de
+         Entradas. Los rellenos van como atributo con var() porque las reglas
+         de clase del documento no alcanzan el árbol que crea <use>, pero las
+         propiedades personalizadas sí se heredan y siguen al tema. -->
+    <svg aria-hidden="true" hidden>
+        <symbol id="pixel-news" viewBox="0 0 32 24">
+            <rect width="32" height="24" fill="var(--color-bg-mid)" />
+            <rect x="3" y="3" width="2" height="2" fill="var(--color-border-accent)" />
+            <rect x="27" y="5" width="2" height="2" fill="var(--color-border-accent)" />
+            <rect x="3" y="18" width="2" height="2" fill="var(--color-border-accent)" />
+            <rect x="7" y="4" width="20" height="18" fill="var(--color-border-strong)" />
+            <rect x="5" y="2" width="20" height="18" fill="var(--color-text-soft)" />
+            <rect x="7" y="4" width="16" height="2" fill="var(--color-bg)" />
+            <rect x="7" y="8" width="7" height="6" fill="var(--color-text-dim)" />
+            <rect x="9" y="10" width="3" height="2" fill="var(--color-text-soft)" />
+            <rect x="16" y="8" width="7" height="1" fill="var(--color-bg)" />
+            <rect x="16" y="11" width="7" height="1" fill="var(--color-bg)" />
+            <rect x="16" y="14" width="5" height="1" fill="var(--color-bg)" />
+            <rect x="7" y="16" width="16" height="1" fill="var(--color-bg)" />
+            <rect x="7" y="18" width="11" height="1" fill="var(--color-bg)" />
+        </symbol>
+    </svg>
     <main class="terminal" aria-label="Consola personal">
         <header class="system-brand" aria-label="Identidad del sitio">
             <a class="system-brand__mark" href="#inicio" aria-label="Ir al inicio">
