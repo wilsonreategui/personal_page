@@ -54,6 +54,9 @@
   --flicker-medium: 0.035;
   --flicker-peak: 0.055;
   --base-font-size: 19px;
+  /* Distancia del contenido al marco interno de .terminal-body: su padding
+     (24px) + borde (1px) menos el anillo del marco (5px). */
+  --frame-bleed: 20px;
   --scanline: repeating-linear-gradient(180deg,
       rgba(0, 0, 0, 0.35) 0 2px,
       rgba(0, 0, 0, 0) 2px 4px);
@@ -475,22 +478,27 @@ h2 {
   color: var(--color-text-arc);
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  text-align: right;
-  gap: 12px;
-  border-right: 3px solid var(--color-border-accent);
-  padding-right: 10px;
+  justify-content: flex-start;
+  text-align: left;
+  gap: 10px;
+  margin-left: 0;
   font-family: var(--font-display);
   text-shadow: var(--glow-calc);
 }
 
+/* Los títulos se leen como un prompt de consola: "# TÍTULO ─ ─ ─". */
 .arc::before {
-  content: "";
+  content: "#";
+  flex: 0 0 auto;
+  color: var(--color-text-soft);
+}
+
+/* La guía es un span y no un ::after porque effects.js marca los .arc como
+   .glitch-target, que ya usa ese pseudo-elemento. */
+.arc__rule {
   flex: 1;
   height: 1px;
-  background: repeating-linear-gradient(90deg,
-      var(--color-border-muted) 0 8px,
-      transparent 8px 14px);
+  background: var(--color-border-muted);
 }
 
 p {
@@ -1086,12 +1094,6 @@ p {
   text-shadow: var(--glow-calc);
 }
 
-.section-title {
-  text-decoration: underline;
-  text-decoration-thickness: 0.1px;
-  text-underline-offset: 6px;
-}
-
 .section-title--reset {
   cursor: pointer;
 }
@@ -1100,10 +1102,6 @@ p {
 .section-title--reset:focus-visible {
   color: var(--color-accent-active);
   outline: none;
-}
-
-.section-line .line-fill {
-  opacity: 0.6;
 }
 
 .text-index-control {
@@ -1284,6 +1282,11 @@ html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"])
 html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"]) [data-page-container] {
   flex: 1 1 auto;
   min-height: 0;
+  /* El overflow recorta en la caja de padding, así que se corre hacia afuera
+     lo mismo que sangra .line-fill; si no, el fragmento del borde queda
+     cortado y parece flotar. El ancho del contenido no cambia. */
+  margin-inline: calc(var(--frame-bleed) * -1);
+  padding-inline: var(--frame-bleed);
   overflow: hidden;
 }
 
@@ -1426,15 +1429,25 @@ html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"])
   text-shadow: var(--glow-calc);
 }
 
+/* Misma doble línea rojiza que el marco de .terminal-body: 1px, 3px de aire
+   y 1px, en var(--color-frame). El margen negativo compensa el padding de
+   .terminal-body (24px + 1px de borde) menos su marco interno (5px), para que
+   la línea arranque pegada al borde y no flotando. */
 .line-fill {
   flex: 1;
-  height: 10px;
-  border-radius: 0;
-  background: repeating-linear-gradient(90deg,
-      var(--color-bg-soft) 0 10px,
-      var(--color-bg-mid) 10px 16px);
-  box-shadow: inset 0 0 0 1px var(--color-border-strong);
-  opacity: 0.7;
+  height: 5px;
+  margin-right: calc(var(--frame-bleed) * -1);
+  background:
+    linear-gradient(var(--color-frame), var(--color-frame)) 0 0 / 100% 1px no-repeat,
+    linear-gradient(var(--color-frame), var(--color-frame)) 0 100% / 100% 1px no-repeat;
+}
+
+/* Fragmento corto que sustituye al antiguo "#": nace del borde izquierdo y
+   no crece. */
+.line-fill--start {
+  flex: 0 0 24px;
+  margin-right: 0;
+  margin-left: calc(var(--frame-bleed) * -1);
 }
 
 .terminal a {
@@ -1512,20 +1525,6 @@ html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"])
 
 .home-menu__section-title {
   margin: 22px 0 10px;
-  justify-content: center;
-  text-align: center;
-  border-right: none;
-  padding-right: 0;
-  font-size: 0.82rem;
-  font-weight: normal;
-}
-
-.home-menu__section-rule {
-  flex: 1;
-  height: 1px;
-  background: repeating-linear-gradient(90deg,
-      var(--color-border-muted) 0 8px,
-      transparent 8px 14px);
 }
 
 .home-menu__section-title--menu {
@@ -1816,6 +1815,8 @@ html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"])
 @media (max-width: 640px) {
   :root {
     --base-font-size: 17px;
+    /* Aquí .terminal-body pierde el marco y baja a 4px de padding. */
+    --frame-bleed: 4px;
   }
 
   body {
@@ -1904,7 +1905,6 @@ html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"])
 
   .arc {
     gap: 8px;
-    border-right: 2px solid var(--color-border-accent);
   }
 
   .line {
@@ -1913,6 +1913,16 @@ html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"])
 
   .text-section-line {
     flex-wrap: nowrap;
+  }
+
+  .line-fill {
+    /* Aquí .system-brand cierra con `3px double`, así que la doble línea baja
+       de 5px (1+3+1) a 3px (1+1+1) para tener el mismo grosor. */
+    height: 3px;
+  }
+
+  .line-fill--start {
+    flex: 0 0 16px;
   }
 
   .text-section-line .line-fill {
@@ -2043,13 +2053,8 @@ html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"])
     font-size: 0.65rem;
   }
 
-  .line-fill {
-    height: 8px;
-  }
-
   .home-menu__section-title {
     margin-top: 18px;
-    border-right: none;
   }
 
   .home-menu__section-title--menu {
@@ -2071,14 +2076,15 @@ html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"])
   }
 
   .terminal .home-news__link {
+    align-self: stretch;
+    justify-content: center;
     margin-top: 2px;
   }
 
   .home-news__pixel {
-    width: min(100%, 200px);
+    width: 100%;
     min-height: 0;
     aspect-ratio: 4 / 3;
-    justify-self: end;
   }
 
   .terminal .home-menu__item {

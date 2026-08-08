@@ -8,7 +8,6 @@ export const PAGE_MODULES = Object.freeze([
     id: "entradas",
     label: "Entradas",
     path: "pages/entradas.html",
-    isNew: true,
   },
   {
     id: "archivos",
