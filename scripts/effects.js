@@ -1,4 +1,8 @@
 const MARQUEE_GAP = 24;
+// Desborde mínimo para que valga la pena mover el texto. Sin este margen, un
+// par de píxeles de diferencia entre cómo mide el navegador la caja y cómo
+// pinta el CSS su contenido bastaban para lanzar el marquee con todo visible.
+const MARQUEE_MIN_OVERFLOW = 8;
 // Duración a la que apunta cada sección al teclearse, sin importar su largo.
 const TYPE_TARGET_MS = 900;
 // Suelo para que un título corto siga viéndose teclear, y techo para que un
@@ -84,8 +88,9 @@ const updateMarquee = () => {
 
     const overflow =
       content.getBoundingClientRect().width - clip.getBoundingClientRect().width;
-    host.classList.toggle("is-overflow", overflow > 0);
-    if (overflow > 0) {
+    const isOverflowing = overflow > MARQUEE_MIN_OVERFLOW;
+    host.classList.toggle("is-overflow", isOverflowing);
+    if (isOverflowing) {
       text.style.setProperty(
         "--marquee-distance",
         `${overflow + MARQUEE_GAP}px`
