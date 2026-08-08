@@ -5,7 +5,10 @@ import {
   requestConnectorUpdate,
   requestMarqueeUpdate,
 } from "./effects.js";
-import { initNavigation } from "./navigation.js";
+import {
+  initNavigation,
+  parseHashRoute,
+} from "./navigation.js?v=20260807-2";
 import { createPageRouter } from "./router.js";
 import { initLampIndicator, initTheme } from "./theme.js";
 
@@ -23,7 +26,7 @@ const initCurrentDate = () => {
   dateElement.dateTime = `${year}-${month}-${day}`;
 };
 
-const initTextIndex = (scope) => {
+const initTextIndex = (scope, initialValue = null) => {
   const select = scope.querySelector(".text-index-select");
   const index = scope.querySelector(".text-index-list");
   const scrollViewport = scope.querySelector(".text-content-scroll");
@@ -31,6 +34,18 @@ const initTextIndex = (scope) => {
   if (!select || !index || !scrollViewport || !views.length) {
     return;
   }
+
+  const pageId = scope.querySelector("[data-page]")?.dataset.page;
+  const updateViewRoute = (value) => {
+    if (!pageId || !value) {
+      return;
+    }
+
+    const nextHash = `#${encodeURIComponent(pageId)}/${encodeURIComponent(value)}`;
+    if (window.location.hash !== nextHash) {
+      window.history.replaceState(null, "", nextHash);
+    }
+  };
 
   const scrollbar = scope.querySelector(".text-scrollbar");
   const scrollTrack = scrollbar?.querySelector(".text-scrollbar__track");
@@ -199,14 +214,45 @@ const initTextIndex = (scope) => {
     const item = event.target.closest("[data-text-value]");
     if (item) {
       showView(item.dataset.textValue);
+      updateViewRoute(item.dataset.textValue);
     }
   });
 
   select.addEventListener("change", () => {
     showView(select.value);
+    updateViewRoute(select.value);
   });
 
-  showView(select.value, { move: false });
+  const hasInitialValue =
+    initialValue === "indice" ||
+    views.some((view) => view.dataset.textView === initialValue);
+  showView(hasInitialValue ? initialValue : select.value, { move: false });
+};
+
+const scrollWindowToStart = () => {
+  const reduceMotion = window.matchMedia?.(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: reduceMotion ? "auto" : "smooth",
+  });
+};
+
+const resetPageView = (scope) => {
+  scope.querySelectorAll("audio").forEach((audio) => audio.pause());
+
+  const select = scope.querySelector(".text-index-select");
+  const hasIndex = Array.from(select?.options || []).some(
+    (option) => option.value === "indice"
+  );
+  if (select && hasIndex) {
+    select.value = "indice";
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+
+  scrollWindowToStart();
 };
 
 const initSectionReset = (scope) => {
@@ -226,13 +272,7 @@ const initSectionReset = (scope) => {
   );
 
   const resetView = () => {
-    const select = scope.querySelector(".text-index-select");
-    if (select) {
-      select.value = "indice";
-      select.dispatchEvent(new Event("change", { bubbles: true }));
-      return;
-    }
-    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    resetPageView(scope);
   };
 
   title.addEventListener("click", resetView);
@@ -244,6 +284,38 @@ const initSectionReset = (scope) => {
   });
 };
 
+const getPageScope = (pageId) =>
+  document
+    .querySelector("[data-page-container]")
+    ?.querySelector(`[data-page='${pageId}']`) || null;
+
+const syncPageView = (pageId, viewId) => {
+  const scope = getPageScope(pageId);
+  if (!scope) {
+    return;
+  }
+
+  if (!viewId) {
+    resetPageView(scope);
+    return;
+  }
+
+  const select = scope.querySelector(".text-index-select");
+  const hasView = Array.from(select?.options || []).some(
+    (option) => option.value === viewId
+  );
+  if (!select || !hasView) {
+    return;
+  }
+
+  if (select.value !== viewId) {
+    select.value = viewId;
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+
+  scrollWindowToStart();
+};
+
 const initApp = () => {
   initCurrentDate();
   initLampIndicator();
@@ -252,17 +324,36 @@ const initApp = () => {
   enhancePage(document);
 
   const router = createPageRouter({
-    onPageReady: (container) => {
+    onPageReady: (container, page) => {
+      const route = parseHashRoute(window.location.hash);
+      const initialTextView = route.page?.id === page.id ? route.viewId : null;
       initAudioPlayers(container);
-      initTextIndex(container);
+      initTextIndex(container, initialTextView);
       initSectionReset(container);
       enhancePage(container);
     },
   });
 
   initNavigation({
-    onNavigate: (pageId) => {
-      router.load(pageId);
+    onReset: (pageId) => {
+      const scope = getPageScope(pageId);
+      if (!scope) {
+        return;
+      }
+
+      const sectionTitle = scope.querySelector(
+        "[data-connector-target] .section-title"
+      );
+      if (sectionTitle) {
+        sectionTitle.click();
+      } else {
+        resetPageView(scope);
+      }
+      requestConnectorUpdate();
+    },
+    onNavigate: async (pageId, viewId) => {
+      await router.load(pageId);
+      syncPageView(pageId, viewId);
       requestConnectorUpdate();
     },
   });

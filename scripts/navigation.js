@@ -1,14 +1,35 @@
 import { DEFAULT_PAGE, PAGE_MODULES, getPageModule } from "./config.js";
 
-const getPageFromHash = () => {
-  const pageId = decodeURIComponent(window.location.hash.slice(1));
-  return getPageModule(pageId) || getPageModule(DEFAULT_PAGE) || PAGE_MODULES[0];
+const INDEXED_PAGES = new Set(["archivos", "proyectos-musicales"]);
+
+export const parseHashRoute = (hash = "") => {
+  const hashValue = hash.startsWith("#") ? hash.slice(1) : hash;
+  let decodedHash = "";
+  try {
+    decodedHash = decodeURIComponent(hashValue);
+  } catch {
+    decodedHash = hashValue;
+  }
+
+  const [pageId, ...routeParts] = decodedHash.split("/");
+  const requestedPage = getPageModule(pageId);
+  const page =
+    requestedPage || getPageModule(DEFAULT_PAGE) || PAGE_MODULES[0];
+
+  return {
+    page,
+    viewId: requestedPage && routeParts.length ? routeParts.join("/") : null,
+  };
 };
+
+const getRouteFromHash = () => parseHashRoute(window.location.hash);
 
 const createMenuItem = (page) => {
   const item = document.createElement("a");
   item.className = "name-menu__item";
-  item.href = `#${page.id}`;
+  item.href = INDEXED_PAGES.has(page.id)
+    ? `#${page.id}/indice`
+    : `#${page.id}`;
   item.dataset.page = page.id;
   item.textContent = page.label;
 
@@ -22,7 +43,7 @@ const createMenuItem = (page) => {
   return item;
 };
 
-export const initNavigation = ({ onNavigate } = {}) => {
+export const initNavigation = ({ onNavigate, onReset } = {}) => {
   const menu = document.querySelector(".name-menu__items");
   const toggle = document.querySelector(".menu-toggle");
   if (!menu || !toggle) {
@@ -38,7 +59,7 @@ export const initNavigation = ({ onNavigate } = {}) => {
   };
 
   const activate = () => {
-    const page = getPageFromHash();
+    const { page, viewId } = getRouteFromHash();
     if (!page) {
       return;
     }
@@ -54,7 +75,7 @@ export const initNavigation = ({ onNavigate } = {}) => {
       }
     });
     closeMenu();
-    onNavigate?.(page.id);
+    onNavigate?.(page.id, viewId);
   };
 
   toggle.addEventListener("click", () => {
@@ -67,10 +88,21 @@ export const initNavigation = ({ onNavigate } = {}) => {
     if (!item) {
       return;
     }
-    if (window.location.hash === item.getAttribute("href")) {
-      event.preventDefault();
-      activate();
+
+    const isActive =
+      document.documentElement.dataset.activePage === item.dataset.page;
+    if (!isActive) {
+      return;
     }
+
+    const href = item.getAttribute("href");
+    if (href && window.location.hash !== href) {
+      return;
+    }
+
+    event.preventDefault();
+    closeMenu();
+    onReset?.(item.dataset.page);
   });
 
   window.addEventListener("hashchange", activate);

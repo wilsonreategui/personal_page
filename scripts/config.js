@@ -5,13 +5,19 @@ export const PAGE_MODULES = Object.freeze([
     path: "pages/inicio.html",
   },
   {
+    id: "entradas",
+    label: "Entradas",
+    path: "pages/entradas.html",
+    isNew: true,
+  },
+  {
     id: "archivos",
     label: "Textos",
     path: "pages/archivos.html",
   },
   {
     id: "proyectos-musicales",
-    label: "Música",
+    label: "Sonidos",
     path: "pages/proyectos-musicales.html",
   },
   {

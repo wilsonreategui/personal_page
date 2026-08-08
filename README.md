@@ -46,7 +46,7 @@ Ejemplo:
 ```js
 {
   id: "proyectos-musicales",
-  label: "Música",
+  label: "Sonidos",
   path: "pages/proyectos-musicales.html",
   isNew: true,
 }
