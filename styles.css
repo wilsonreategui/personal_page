@@ -54,9 +54,9 @@
   --flicker-medium: 0.035;
   --flicker-peak: 0.055;
   --base-font-size: 19px;
-  /* Distancia del contenido al marco interno de .terminal-body: su padding
-     (24px) + borde (1px) menos el anillo del marco (5px). */
-  --frame-bleed: 20px;
+  /* Lleva el contenido hasta el anillo interno de .terminal-body: su padding
+     (24px) + borde (1px) menos los 4px a los que arranca el anillo. */
+  --frame-bleed: 21px;
   --scanline: repeating-linear-gradient(180deg,
       rgba(0, 0, 0, 0.35) 0 2px,
       rgba(0, 0, 0, 0) 2px 4px);
@@ -478,27 +478,28 @@ h2 {
   color: var(--color-text-arc);
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  text-align: left;
-  gap: 10px;
+  justify-content: center;
+  text-align: center;
+  gap: 12px;
   margin-left: 0;
   font-family: var(--font-display);
   text-shadow: var(--glow-calc);
 }
 
-/* Los títulos se leen como un prompt de consola: "# TÍTULO ─ ─ ─". */
-.arc::before {
-  content: "#";
-  flex: 0 0 auto;
-  color: var(--color-text-soft);
-}
-
-/* La guía es un span y no un ::after porque effects.js marca los .arc como
-   .glitch-target, que ya usa ese pseudo-elemento. */
+/* Guías punteadas a ambos costados. La derecha es un span y no un ::after
+   porque effects.js marca los .arc como .glitch-target, que ya usa ese
+   pseudo-elemento. */
+.arc::before,
 .arc__rule {
   flex: 1;
   height: 1px;
-  background: var(--color-border-muted);
+  background: repeating-linear-gradient(90deg,
+      var(--color-border-muted) 0 8px,
+      transparent 8px 14px);
+}
+
+.arc::before {
+  content: "";
 }
 
 p {
@@ -548,17 +549,20 @@ p {
   flex: 0 0 auto;
 }
 
-.timeline-item summary .summary-move {
+.timeline-item summary .summary-move,
+.text-index-control .summary-move {
   display: inline-block;
   white-space: nowrap;
   will-change: transform;
 }
 
-.timeline-item summary .summary-content {
+.timeline-item summary .summary-content,
+.text-index-control .summary-content {
   display: inline-block;
 }
 
-.timeline-item summary.is-overflow .summary-move {
+.timeline-item summary.is-overflow .summary-move,
+.text-index-control.is-overflow .summary-move {
   animation: marquee-left 10.5s linear infinite;
   animation-delay: 0.5s;
 }
@@ -1094,6 +1098,15 @@ p {
   text-shadow: var(--glow-calc);
 }
 
+/* El título no cede espacio: si la línea desborda, quien encoge es el select. */
+.section-title {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  text-decoration: underline;
+  text-decoration-thickness: 0.1px;
+  text-underline-offset: 6px;
+}
+
 .section-title--reset {
   cursor: pointer;
 }
@@ -1107,11 +1120,14 @@ p {
 .text-index-control {
   position: relative;
   display: block;
-  flex: 0 0 auto;
+  /* Encoge antes que desbordar: el select usa field-sizing: content y crece
+     con el texto de la opción activa. */
+  flex: 0 1 auto;
   min-width: 0;
+  max-width: 100%;
   width: fit-content;
   margin-left: -3px;
-  color: var(--color-text-soft);
+  color: var(--color-text-strong);
 }
 
 .text-index-control::after {
@@ -1136,8 +1152,10 @@ p {
 
 .text-index-select {
   width: auto;
+  max-width: 100%;
   height: 34px;
   padding: 4px 20px 4px 6px;
+  text-overflow: ellipsis;
   border: 1px solid var(--color-border-muted);
   border-radius: 0;
   background: var(--color-bg);
@@ -1159,6 +1177,34 @@ p {
   border-color: var(--color-brand);
   color: var(--color-text-strong);
   outline: none;
+}
+
+/* El navegador dibuja el texto del <select> internamente y no hay nodo que
+   animar, así que se repinta encima en un span propio para poder reutilizar el
+   marquee de las líneas de tiempo. Solo se oculta el texto nativo si el span
+   llegó a tener contenido, para no quedarnos con la caja vacía si falla el JS. */
+.text-index-control:has(.summary-content) .text-index-select {
+  color: transparent;
+}
+
+.text-index-control__label {
+  position: absolute;
+  /* Calca la caja de texto del select: 1px de borde + su padding. */
+  inset: 1px 21px 1px 7px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  pointer-events: none;
+  color: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+.text-index-select:hover ~ .text-index-control__label,
+.text-index-select:focus-visible ~ .text-index-control__label {
+  color: var(--color-text-strong);
 }
 
 .text-index-select option {
@@ -1430,16 +1476,20 @@ html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"])
 }
 
 /* Misma doble línea rojiza que el marco de .terminal-body: 1px, 3px de aire
-   y 1px, en var(--color-frame). El margen negativo compensa el padding de
-   .terminal-body (24px + 1px de borde) menos su marco interno (5px), para que
-   la línea arranque pegada al borde y no flotando. */
+   y 1px, en var(--color-frame).
+
+   La esquina queda anidada: el borde exterior sigue contiguo de arriba abajo y
+   son las líneas interiores las que giran para convertirse en estas dos guías,
+   por eso arrancan justo sobre el anillo. La capa de fondo corta el tramo de
+   anillo que queda entre ambas, que es lo que antes las cruzaba por el medio. */
 .line-fill {
   flex: 1;
   height: 5px;
   margin-right: calc(var(--frame-bleed) * -1);
   background:
-    linear-gradient(var(--color-frame), var(--color-frame)) 0 0 / 100% 1px no-repeat,
-    linear-gradient(var(--color-frame), var(--color-frame)) 0 100% / 100% 1px no-repeat;
+    linear-gradient(var(--color-frame), var(--color-frame)) left top / 100% 1px no-repeat,
+    linear-gradient(var(--color-frame), var(--color-frame)) left bottom / 100% 1px no-repeat,
+    var(--color-bg);
 }
 
 /* Fragmento corto que sustituye al antiguo "#": nace del borde izquierdo y
@@ -1514,7 +1564,8 @@ html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"])
   text-decoration: none;
 }
 
-.page-section.is-active-page .text-index-control {
+/* El acento de página activa lo lleva el título, no el selector. */
+.page-section.is-active-page .section-title {
   color: var(--color-accent-active);
   text-shadow: 0 0 8px currentColor;
 }
@@ -1930,7 +1981,6 @@ html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"])
   }
 
   .text-index-control {
-    flex: 0 0 auto;
     margin-left: 0;
   }
 
@@ -2301,7 +2351,8 @@ html:is([data-active-page="archivos"], [data-active-page="proyectos-musicales"])
     transition: none;
   }
 
-  .timeline-item summary .summary-move {
+  .timeline-item summary .summary-move,
+  .text-index-control .summary-move {
     animation: none;
   }
 

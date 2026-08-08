@@ -47,6 +47,25 @@ const initTextIndex = (scope, initialValue = null) => {
     }
   };
 
+  // El texto visible del selector se repinta en un span propio para que pueda
+  // correr el marquee; el <select> queda debajo, transparente, manejando la
+  // interacción nativa.
+  const selectLabel = scope.querySelector(
+    ".text-index-control .summary-move"
+  );
+
+  const syncSelectLabel = () => {
+    const label = (select.selectedOptions[0]?.textContent || "").trim();
+    if (!selectLabel || selectLabel.textContent.trim() === label) {
+      return;
+    }
+
+    selectLabel.textContent = label;
+    // prepareMarqueeText solo envuelve el texto una vez; al cambiar de opción
+    // hay que dejar que lo rehaga con el contenido nuevo.
+    delete selectLabel.dataset.prepared;
+  };
+
   const scrollbar = scope.querySelector(".text-scrollbar");
   const scrollTrack = scrollbar?.querySelector(".text-scrollbar__track");
   const scrollThumb = scrollbar?.querySelector(".text-scrollbar__thumb");
@@ -196,6 +215,7 @@ const initTextIndex = (scope, initialValue = null) => {
       view.hidden = view.dataset.textView !== value;
     });
     select.value = value;
+    syncSelectLabel();
 
     const target = isIndex
       ? index

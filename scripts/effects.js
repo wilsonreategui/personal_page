@@ -1,4 +1,7 @@
 const MARQUEE_GAP = 24;
+// Contenedores que corren el marquee cuando su texto no entra. Cada uno debe
+// tener dentro un .summary-clip que recorta y un .summary-move que se anima.
+const MARQUEE_HOSTS = ".timeline-item summary, .text-index-control";
 const GLITCH_CHARS = [
   "⟊",
   "⧖",
@@ -47,9 +50,9 @@ const prepareMarqueeText = (text) => {
 };
 
 const updateMarquee = () => {
-  document.querySelectorAll(".timeline-item summary").forEach((summary) => {
-    const text = summary.querySelector(".summary-move");
-    const clip = summary.querySelector(".summary-clip");
+  document.querySelectorAll(MARQUEE_HOSTS).forEach((host) => {
+    const text = host.querySelector(".summary-move");
+    const clip = host.querySelector(".summary-clip");
     if (!text || !clip) {
       return;
     }
@@ -62,7 +65,7 @@ const updateMarquee = () => {
 
     const overflow =
       content.getBoundingClientRect().width - clip.getBoundingClientRect().width;
-    summary.classList.toggle("is-overflow", overflow > 0);
+    host.classList.toggle("is-overflow", overflow > 0);
     if (overflow > 0) {
       text.style.setProperty(
         "--marquee-distance",
