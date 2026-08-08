@@ -1,4 +1,11 @@
 const MARQUEE_GAP = 24;
+// Duración a la que apunta cada sección al teclearse, sin importar su largo.
+const TYPE_TARGET_MS = 900;
+// Suelo para que un título corto siga viéndose teclear, y techo para que un
+// bloque largo no se dispare.
+const TYPE_MIN_CPS = 55;
+const TYPE_MAX_CPS = 2200;
+const TYPE_TICK_MS = 16;
 // Contenedores que corren el marquee cuando su texto no entra. Cada uno debe
 // tener dentro un .summary-clip que recorta y un .summary-move que se anima.
 const MARQUEE_HOSTS = ".timeline-item summary, .text-index-control";
@@ -47,6 +54,18 @@ const prepareMarqueeText = (text) => {
   content.innerHTML = text.innerHTML.trim();
   text.replaceChildren(content);
   text.dataset.prepared = "true";
+};
+
+// Las pausas de puntuación solo se aplican cuando el texto va letra a letra:
+// en bloques largos se acumulaban y eran buena parte de la lentitud.
+const punctuationPause = (character, charsPerSecond) => {
+  if (charsPerSecond > 200) {
+    return 0;
+  }
+  if (/[.!?]/.test(character)) {
+    return 30;
+  }
+  return /[,;:]/.test(character) ? 15 : 0;
 };
 
 const updateMarquee = () => {
@@ -265,12 +284,22 @@ const startTypewriter = (scope = document) => {
       textItems.forEach((item) => {
         item.node.nodeValue = "";
       });
+      const totalChars = textItems.reduce(
+        (sum, item) => sum + item.text.length,
+        0
+      );
       return {
         section,
         items,
         textItems,
         revealItems,
-        totalChars: textItems.reduce((sum, item) => sum + item.text.length, 0),
+        totalChars,
+        // Todas las secciones apuntan a la misma duración, así que la velocidad
+        // se deduce de su largo en vez de ser fija por carácter.
+        charsPerSecond: Math.min(
+          TYPE_MAX_CPS,
+          Math.max(TYPE_MIN_CPS, (totalChars * 1000) / TYPE_TARGET_MS)
+        ),
       };
     })
     .filter(Boolean);
@@ -341,38 +370,50 @@ const startTypewriter = (scope = document) => {
 
     const typeNext = () => {
       const entry = queue[sectionIndex];
-      let item = entry?.items[itemIndex];
-      while (item?.type === "reveal") {
-        item.element.classList.remove("typewriter-hidden");
-        itemIndex += 1;
-        item = entry.items[itemIndex];
-      }
-      if (!item) {
-        finishSection();
+      if (!entry) {
+        finish();
         return;
       }
 
-      const character = item.text.charAt(charIndex);
-      item.node.nodeValue += character;
-      charIndex += 1;
-      if (charIndex >= item.text.length) {
-        itemIndex += 1;
-        charIndex = 0;
+      // Los temporizadores del navegador no bajan de ~4ms, así que a una letra
+      // por tick el texto largo se arrastraba. Se escriben tantas letras por
+      // tick como haga falta para sostener el ritmo, y el intervalo se
+      // recalcula a partir de ese lote para no desviarse.
+      const perTick = Math.max(
+        1,
+        Math.round((entry.charsPerSecond * TYPE_TICK_MS) / 1000)
+      );
+      let pause = 0;
+
+      for (let typed = 0; typed < perTick; typed += 1) {
+        let item = entry.items[itemIndex];
+        while (item?.type === "reveal") {
+          item.element.classList.remove("typewriter-hidden");
+          itemIndex += 1;
+          item = entry.items[itemIndex];
+        }
+        if (!item) {
+          finishSection();
+          return;
+        }
+
+        const character = item.text.charAt(charIndex);
+        item.node.nodeValue += character;
+        charIndex += 1;
+        if (charIndex >= item.text.length) {
+          itemIndex += 1;
+          charIndex = 0;
+        }
+
+        pause += punctuationPause(character, entry.charsPerSecond);
       }
 
-      const baseDelay = Math.min(
-        10,
-        Math.max(2, Math.round(2200 / Math.max(entry.totalChars, 1)))
-      );
-      const punctuationDelay = /[.!?]/.test(character)
-        ? 35
-        : /[,;:]/.test(character)
-          ? 18
-          : 0;
+      const interval = Math.round((perTick * 1000) / entry.charsPerSecond);
+      // El titubeo solo se nota cuando va letra a letra; en lotes estorba.
+      const jitter = perTick === 1 ? 0.75 + Math.random() * 0.5 : 1;
       timer = window.setTimeout(
         typeNext,
-        Math.max(1, baseDelay * (0.3 + Math.random() * 0.9)) +
-          punctuationDelay
+        Math.max(8, Math.round(interval * jitter)) + pause
       );
     };
 
