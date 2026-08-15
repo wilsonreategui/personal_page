@@ -189,7 +189,7 @@ body::after {
 
 .terminal {
   width: 100%;
-  max-width: 1024px;
+  max-width: 975px;
   min-height: calc(100vh - 40px);
   min-height: calc(100dvh - 40px);
   margin: 0 auto;
@@ -1105,8 +1105,8 @@ p {
   text-transform: none;
 }
 
-.text-index-select:hover ~ .text-index-control__label,
-.text-index-select:focus-visible ~ .text-index-control__label {
+.text-index-select:hover~.text-index-control__label,
+.text-index-select:focus-visible~.text-index-control__label {
   color: var(--color-text-strong);
 }
 
@@ -1261,14 +1261,14 @@ html[data-layout="indexed"] [data-page-container] {
   scrollbar-width: none;
 }
 
-.indexed-page .text-content-scroll > [data-text-view],
-.indexed-page .text-content-scroll > .text-index-list {
+.indexed-page .text-content-scroll>[data-text-view],
+.indexed-page .text-content-scroll>.text-index-list {
   box-sizing: border-box;
   padding: 0 4px 18px;
 }
 
-.indexed-page .text-content-scroll.has-scrollbar > [data-text-view],
-.indexed-page .text-content-scroll.has-scrollbar > .text-index-list {
+.indexed-page .text-content-scroll.has-scrollbar>[data-text-view],
+.indexed-page .text-content-scroll.has-scrollbar>.text-index-list {
   padding-right: 28px;
 }
 
@@ -2120,6 +2120,7 @@ html[data-layout="indexed"] [data-page-container] {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .text-index-control::after,
   .text-index-select,
   .home-menu__icon {
